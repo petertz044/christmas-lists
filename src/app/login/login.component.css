@@ -1,0 +1,47 @@
+/* 🎄 Background image */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-size: cover;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Center the login box */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Card styling */
+.login-card {
+  padding: 30px;
+  width: 320px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  border: 2px solid #2E7D32;
+  z-index: 10;
+}
+
+.full-width {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.xmas-header {
+  color: #2E7D32;
+  margin-bottom: 20px;
+}
+
+mat-icon {
+  vertical-align: middle;
+  margin-right: 8px;
+  color: #C62828;
+}
+
