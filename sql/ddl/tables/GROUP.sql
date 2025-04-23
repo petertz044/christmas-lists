@@ -7,13 +7,13 @@ CREATE TABLE "christmas-list"."group" (
 	user_id_last_modified text null,
 	CONSTRAINT group_pk PRIMARY KEY (id)
 );
-COMMENT ON TABLE "christmas-list"."GROUP" IS 'Groups that users and lists will belong to';
+COMMENT ON TABLE "christmas-list"."group" IS 'Groups that users and lists will belong to';
 
 -- Column comments
 
-COMMENT ON COLUMN "christmas-list"."GROUP".id IS 'PK of group';
-COMMENT ON COLUMN "christmas-list"."GROUP".title IS 'Title of the group';
-COMMENT ON COLUMN "christmas-list"."GROUP".description IS 'Description of the group';
-COMMENT ON COLUMN "christmas-list"."GROUP".dt_crtd IS 'Date entry was created';
-COMMENT ON COLUMN "christmas-list"."GROUP".dt_last_modified IS 'Date entry was last modified';
-COMMENT ON COLUMN "christmas-list"."GROUP".user_id_last_modified IS 'User that last modified this entry';
+COMMENT ON COLUMN "christmas-list"."group".id IS 'PK of group';
+COMMENT ON COLUMN "christmas-list"."group".title IS 'Title of the group';
+COMMENT ON COLUMN "christmas-list"."group".description IS 'Description of the group';
+COMMENT ON COLUMN "christmas-list"."group".dt_crtd IS 'Date entry was created';
+COMMENT ON COLUMN "christmas-list"."group".dt_last_modified IS 'Date entry was last modified';
+COMMENT ON COLUMN "christmas-list"."group".user_id_last_modified IS 'User that last modified this entry';

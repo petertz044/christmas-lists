@@ -1,7 +1,7 @@
 CREATE TABLE "christmas-list".list (
 	id serial NOT NULL,
 	title text NOT NULL,
-	user_id_owner integer NOT null references "christmas-list"."USER"(id),
+	user_id_owner integer NOT null references "christmas-list"."user"(id),
 	description text NULL,
 	is_active boolean NOT NULL,
 	dt_crtd timestamp NOT NULL,
