@@ -5,6 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -21,10 +23,23 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  username = '';
-  password = '';
+  private username = '';
+  private password = '';
+  private errorMessage = '';
+
+  constructor(
+    private authService: AuthenticationService,
+    private router: Router
+  ) {}
 
   login() {
-    console.log('Logging in...', this.username, this.password);
+    this.authService.login(this.username, this.password).subscribe({
+      next: (data) => {
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        this.errorMessage = 'Invalid username or password'
+      }
+    })
   }
 }
