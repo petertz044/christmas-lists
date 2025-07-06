@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { AuthService } from '../../core/auth.service';
+import { AuthService } from '../../../core/auth.service';
 import { Router } from '@angular/router';
-
+import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +21,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
+    MatIconModule,
     MatProgressSpinner,
     MatSnackBarModule,
   ],
@@ -31,6 +32,7 @@ export class LoginComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar)
+  hide = true;
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
