@@ -1,5 +1,4 @@
 import { Injectable, signal } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { catchError, first, firstValueFrom, map, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -8,7 +7,7 @@ import { Router } from '@angular/router';
 export class AuthService {
   private tokenKey = 'auth_token'
   private isLoggedIn = signal(this.hasToken());
-  private baseUrl = environment.apiUrl;
+  private baseUrl = "jdbc:postgresql://database.nicholaszullo.com:5432/christmas"
 
   constructor(private http: HttpClient, private router: Router) {}  
 
@@ -31,10 +30,6 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
-  }
-
-  isAuthenticated() {
-    return this.isLoggedIn();
   }
 
   private hasToken(): boolean {

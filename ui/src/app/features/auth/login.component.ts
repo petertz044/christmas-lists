@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../core/auth.service';
 import { Router } from '@angular/router';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -51,12 +51,15 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.invalid) return;
 
+    this.loginForm.disable()
+
     this.isLoading.set(true)
 
     const credentials = this.loginForm.value;
 
     this.auth.login(credentials as { email: string; password: string }).subscribe({
       next: (success) => {
+        this.loginForm.enable()
         this.isLoading.set(false);
         if (success) {
           this.snackBar.open('Login successful', 'Close', { duration: 3000 });
@@ -66,6 +69,7 @@ export class LoginComponent {
         }
       },
       error: (err) => {
+        this.loginForm.enable()
         this.isLoading.set(false);
         console.error('Login error:', err);
         this.snackBar.open('Login failed. Please try again.', 'Close', { duration: 3000 });
