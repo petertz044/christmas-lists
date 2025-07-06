@@ -29,10 +29,11 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  hide = true;
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar)
-  hide = true;
+  
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),

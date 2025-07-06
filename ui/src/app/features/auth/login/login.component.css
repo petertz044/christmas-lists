@@ -83,7 +83,14 @@ body, html, app-root {
   font-style: italic;
 }
 
-mat-icon {
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-password-toggle-button {
+  display: none !important;
+  appearance: none !important;
+}
+
+mat-icon.header-icon {
   vertical-align: middle;
   margin-right: 8px;
   color: #C62828;

@@ -1,13 +1,13 @@
 <div class="page-wrapper">
     <header class="xmas-header">
-        <h1> Welcome to Christmas Lists</h1>
-        <p>Sign in to see what people are asking for!</p>
+        <h1>Christmas Lists</h1>
+        <p>Make your own list and shop with confidence</p>
     </header>
 
     <div class="login-page-container">
         <div class="left-col">
             <mat-card class="login-card">
-                <h2>Login</h2>
+                <h2 class="font-bold">Login</h2>
                 <form class="flex flex-col gap-2" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
                 <mat-form-field appearance="fill" class="full-width">
@@ -18,9 +18,9 @@
 
                 <mat-form-field appearance="fill" class="full-width">
                     <mat-label>Password</mat-label>
-                    <input matInput type="hide ? 'password' : 'text'" formControlName="password" required />
-                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Toggle password visibility'">
-                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" required />
+                    <button mat-icon-button matSuffix *ngIf="hide !== undefined && password.value" (click)="hide = !hide">
+                        <mat-icon class="header-icon">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                     </button>
                     <mat-error *ngIf="password.invalid && password.touched">Password is required</mat-error>
                 </mat-form-field>
