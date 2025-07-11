@@ -1,7 +1,7 @@
 <div class="page-wrapper">
     <header class="xmas-header">
         <h1>Christmas Lists</h1>
-        <p>Make your own list and shop with confidence</p>
+        <p>Make your list and shop with confidence</p>
     </header>
 
     <div class="login-page-container">
@@ -11,7 +11,7 @@
                     <mat-card-title>Login</mat-card-title>
                 </mat-card-header>
                 <p>Log in to Manage Your Lists 🎁</p>
-                <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <form class="login-form" [formGroup]="loginForm">
 
                     <mat-card-content>
                         <mat-form-field appearance="outline">
@@ -30,7 +30,12 @@
                         </mat-form-field>
                     </mat-card-content>
 
-                    <button mat-raised-button color="accent" class="btn-block" [disabled]="loginForm.invalid || isLoading()">
+                    <button 
+                        mat-raised-button
+                        color="accent"
+                        class="btn-block"
+                        [disabled]="loginForm.invalid || isLoading()"
+                        (click)="onSubmit()">
                         Login
                     </button>
 
@@ -42,7 +47,7 @@
             <div class="register-text">
                 <span class="subtitle">
                     If you don't have an account,
-                    <span class="font-bold text-red-800">Register Here!</span>
+                    <a class="font-bold text-red-800" routerLink="register">Register Here!</a>
                 </span>
             </div>
         </div>
@@ -50,7 +55,7 @@
             <mat-card>
                 <mat-card-content>
                     <img
-                        src="assets/images/santa.jpg"
+                        src="assets/images/santa.png"
                         alt="login-santa"
                         class="image-illustration"
                     />
