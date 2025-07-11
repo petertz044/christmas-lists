@@ -16,6 +16,7 @@ export class AuthService {
       tap(res => {
         localStorage.setItem('auth_token', res.token);
         this.isLoggedIn.set(true);
+        this.router.navigate(["/home"])
       }),
       map(() => true),
       catchError(() => of(false))
