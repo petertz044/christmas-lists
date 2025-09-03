@@ -4,42 +4,44 @@ $secondary-green: #2e7d32;
 $gold: #fbc02d;
 $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
-.register-card {
-display: flex;
-flex-direction: column;
-align-items: center;
-text-align: center;
-
-mat-card-title {
-    color: $secondary-green;
-    margin-bottom: 0.25rem;
-}
-
-p {
-    color: $secondary-green;
-    margin-bottom: 1.5rem;
-    max-width: 280px;
-}
-
 .register-wrapper {
-    flex: 1;
-    padding: 2.5rem 3rem;
+flex: 1;
+padding: 2.5rem 3rem;
+display: flex;
+justify-content: center;
+
+    .register-card {
+    background-color: #fff;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    width: 50%;
+    align-items: center;
+    text-align: center;
+
+    mat-card-title {
+        color: $secondary-green;
+        margin-bottom: 0.25rem;
+    }
+
+    p {
+        color: $secondary-green;
+        margin-bottom: 1.5rem;
+        max-width: 280px;
+    }
+
     .register-form {
         .full-width {
-            margin-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
         }
 
         mat-form-field {
-            outline-color: #0c440f;
-            width: 100%;
-            color:#0c440f;
+        outline-color: #0c440f;
+        width: 100%;
+        color:#0c440f;
 
-            mat-label {
-                color: $secondary-green;
-            }
+        mat-label {
+            color: $secondary-green;
+        }
         }
 
         .btn-block {
@@ -69,15 +71,5 @@ p {
         }
     }
     }
-
-    .font-bold {
-        color: $primary-red;
-        font-weight: 700;
-        cursor: pointer;
-        text-decoration: underline;
-
-        &:hover {
-        color: $secondary-green;
-        }
-    }
 }
+
