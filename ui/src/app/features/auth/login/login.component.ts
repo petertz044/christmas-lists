@@ -26,7 +26,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatCardModule,
     MatIconModule,
     MatProgressSpinner,
-    MatSnackBarModule,
+    MatSnackBarModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
