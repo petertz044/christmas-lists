@@ -5,18 +5,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
+import PasswordValidator from '../../../core/validators/password-validator.validators';
 
 @Component({
   selector: 'app-register',
   imports: [
     CommonModule,
-    RegisterComponent,
     ReactiveFormsModule,
     RouterLink,
     MatFormFieldModule,
@@ -24,7 +24,7 @@ import { AuthService } from '../../../core/auth.service';
     MatButtonModule,
     MatCardModule,
     MatIconModule,
-    MatProgressSpinner,
+    MatProgressSpinnerModule,
     MatSnackBarModule
   ],
   templateUrl: './register.component.html',
@@ -32,25 +32,44 @@ import { AuthService } from '../../../core/auth.service';
 })
 export class RegisterComponent {
   
-  hide = true;
+  hidePassword = true;
+  hideConfirmPassword = true;
+  passMatch = false;
   private register = inject(RegisterService)
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  registerForm: FormGroup;
 
-  registerForm = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', Validators.required)
-  });
+  constructor(private fb: FormBuilder) {
+    this.registerForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          PasswordValidator.passwordStrength
+        ]
+      ],
+      confirmPassword: [
+        '',
+        [
+          Validators.required,
+          PasswordValidator.passMatch
+        ]
+      ]
+    });
+  }
   
   get firstName() {
     return this.registerForm.get('firstName')!;
   }
 
   get lastName() {
-    return this.registerForm.get('firstName')!;
+    return this.registerForm.get('lastName')!;
   }
 
   get email() {
@@ -60,6 +79,11 @@ export class RegisterComponent {
   get password() {
     return this.registerForm.get('password')!;
   }
+
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword')
+  }
+
 
   isLoading = signal(false);
   loginFailed = signal(false);

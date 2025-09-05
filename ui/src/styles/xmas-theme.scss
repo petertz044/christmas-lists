@@ -35,11 +35,34 @@ head {
 }
 
 .site-wide-header {
-  width: 100%;
+  position: absolute; // or absolute, depending on your layout
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
   font-family: $font-family;
   border-bottom: 1px solid $primary-red;
   text-align: left;
-  color: #004225;
+  max-block-size: 4rem;
+  color: $secondary-green;
   font-size: 1rem;
+  background: white;
+  z-index: 1000;
+
+  h1 {
+    vertical-align: middle;
+    align-items: center;
+    padding-left: 15px;
+    margin: 0;
+
+    .header-icon {
+      font-size: 32px;
+      height: 32px;
+      width: 32px;
+      vertical-align: top;
+      overflow: visible;
+      background-color: transparent;
+    }
+  }
 }
 
