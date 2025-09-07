@@ -1,13 +1,68 @@
 @use '@angular/material' as mat;
 
+//$page-bg: linear-gradient(to bottom, #f0f8ff, #fff);
+$primary-red: #c62828;
+$secondary-green: #2e7d32;
+$gold: #fbc02d;
+$font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
 html {
   @include mat.theme((
     color: (
       primary: mat.$green-palette,
-      tertiary: mat.$red-palette,
-      theme-type: light,
+      tertiary: mat.$red-palette
     ),
-    typography: Roboto,
+    typography: $font-family,
     density: 0
   ));
 }
+
+body {
+  font-family: $font-family;
+  color: $primary-red;
+}
+
+head {
+  font-family: $font-family;
+  color: $primary-red;
+}
+
+.mat-form-field {
+  outline-color: #0c440f;
+  width: 100%;
+  color:#0c440f;
+  --mdc-outlined-text-field-outline-color: $secondary-green;
+}
+
+.site-wide-header {
+  position: absolute; // or absolute, depending on your layout
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  font-family: $font-family;
+  border-bottom: 1px solid $primary-red;
+  text-align: left;
+  max-block-size: 4rem;
+  color: $secondary-green;
+  font-size: 1rem;
+  background: white;
+  z-index: 1000;
+
+  h1 {
+    vertical-align: middle;
+    align-items: center;
+    padding-left: 15px;
+    margin: 0;
+
+    .header-icon {
+      font-size: 32px;
+      height: 32px;
+      width: 32px;
+      vertical-align: top;
+      overflow: visible;
+      background-color: transparent;
+    }
+  }
+}
+

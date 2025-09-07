@@ -1,0 +1,97 @@
+<header class="site-wide-header">
+    <h1>
+        Christmas Lists
+        <mat-icon class="header-icon">checklist_rtl</mat-icon>
+    </h1>
+</header>
+<br>
+<div class="register-wrapper" fxLayout="row" fxLayoutAlign="center center">
+    <mat-card class="register-card">
+        <mat-card-header>
+            <h2>Register</h2>
+        </mat-card-header>
+        <h3>Enter your details below to get started</h3>
+        <mat-card-content>
+            <img
+                src="assets/images/santa_reading_list.png"
+                alt="register-santa"
+                class="image-illustration"
+            />
+        </mat-card-content>
+        <div class="register-form-wrapper">
+            <form class="register-form" [formGroup]="registerForm">
+                <mat-card-content>
+                    <mat-form-field appearance="outline">
+                        <mat-label>First Name</mat-label>
+                            <input matInput formControlName="firstName" required />
+                        <mat-error *ngIf="firstName.invalid && firstName.touched">First name is required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Last Name</mat-label>
+                            <input matInput formControlName="lastName" required />
+                        <mat-error *ngIf="lastName.invalid && lastName.touched">Last Name is required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Email</mat-label>
+                            <input matInput type="email" formControlName="email" required />
+                        <mat-error *ngIf="email.invalid && email.touched">Please enter a valid email</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Password</mat-label>
+                            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
+                        <button mat-icon-button matSuffix *ngIf="hidePassword !== undefined && password?.value" (click)="hidePassword = !hidePassword">
+                            <mat-icon class="header-icon">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                        @if ( (password?.invalid && password?.touched) || password?.dirty ) {
+                            <div>
+                                @if (password?.errors?.['required']) {
+                                    <mat-error><small>Password is required</small></mat-error>
+                                }@if (password?.errors?.['minlength']) {
+                                    <mat-error><small>Password must be at least 8 characters</small></mat-error>
+                                }@if (password?.errors?.['hasUpperCase']) {
+                                    <mat-error><small>Password must contain at least one upper case</small></mat-error>
+                                }@if (password?.errors?.['hasLowerCase']) {
+                                    <mat-error><small>Password must contain at least one lower case</small></mat-error>
+                                }@if (password?.errors?.['hasSpecial']) {
+                                    <mat-error><small>Password must contain at least one special character</small></mat-error>
+                                }
+                            </div>
+                        }
+                    </mat-form-field>
+                    @if (password?.dirty) {
+                        <mat-form-field appearance="outline">
+                            <mat-label>Re-enter Password</mat-label>
+                                <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword" required />
+                            <button mat-icon-button matSuffix *ngIf="hideConfirmPassword !== undefined && confirmPassword?.value" (click)="hideConfirmPassword = !hideConfirmPassword">
+                                <mat-icon class="header-icon">{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                            </button>
+                            @if (confirmPassword?.invalid && confirmPassword?.touched) {
+                                <div>
+                                    @if (confirmPassword?.errors?.['mismatch']) {
+                                        <mat-error><small>Passwords must match</small></mat-error>
+                                    }
+                                </div>
+                            }
+                        </mat-form-field>
+                    }
+                </mat-card-content>
+
+                <button 
+                    mat-raised-button
+                    color="accent"
+                    class="btn-block"
+                    [disabled]="registerForm.invalid || isLoading()"
+                    (click)="onSubmit()">
+                    Register
+                </button>
+
+                <div class="spinner-container" *ngIf="isLoading()">
+                    <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
+                </div>
+            </form>
+        </div>
+    </mat-card>
+</div>
