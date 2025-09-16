@@ -36,12 +36,13 @@
                         class="btn-block"
                         [disabled]="loginForm.invalid || isLoading()"
                         (click)="onSubmit()">
-                        Login
+                        @if(!isLoading()) {
+                            Login
+                        }
+                        @if(isLoading()) {
+                            <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
+                        }
                     </button>
-
-                    <div class="spinner-container" *ngIf="isLoading()">
-                        <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
-                    </div>
                 </form>
             </mat-card>
             <div class="register-text">

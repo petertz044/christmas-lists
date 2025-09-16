@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RegisterService, User } from '../../../core/register.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,7 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
 import PasswordValidator from '../../../core/validators/password-validator.validators';
@@ -30,7 +30,7 @@ import PasswordValidator from '../../../core/validators/password-validator.valid
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit{
   
   hidePassword = true;
   hideConfirmPassword = true;
@@ -39,9 +39,11 @@ export class RegisterComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
-  registerForm: FormGroup;
+  registerForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
     this.registerForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -61,9 +63,9 @@ export class RegisterComponent {
           PasswordValidator.passMatch
         ]
       ]
-    });
+    });    
   }
-  
+
   get firstName() {
     return this.registerForm.get('firstName')!;
   }
