@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors } from "@angular/forms";
+import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
 function passwordStrength(control: AbstractControl): ValidationErrors | null {
     const password = control.value

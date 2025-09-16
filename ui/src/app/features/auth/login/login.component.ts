@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth.service';
 import { Router, RouterLink } from '@angular/router';
-import { RegisterComponent } from '../register/register.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,7 +16,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   standalone: true,
   imports: [
     CommonModule,
-    RegisterComponent,
     ReactiveFormsModule,
     RouterLink,
     MatFormFieldModule,

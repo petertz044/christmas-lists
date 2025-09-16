@@ -68,7 +68,7 @@
                             <button mat-icon-button matSuffix *ngIf="hideConfirmPassword !== undefined && confirmPassword?.value" (click)="hideConfirmPassword = !hideConfirmPassword">
                                 <mat-icon class="header-icon">{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                             </button>
-                            @if (confirmPassword?.invalid && confirmPassword?.touched) {
+                            @if (confirmPassword?.invalid && confirmPassword?.dirty) {
                                 <div>
                                     @if (confirmPassword?.errors?.['mismatch']) {
                                         <mat-error><small>Passwords must match</small></mat-error>
@@ -78,19 +78,23 @@
                         </mat-form-field>
                     }
                 </mat-card-content>
-
-                <button 
-                    mat-raised-button
-                    color="accent"
-                    class="btn-block"
-                    [disabled]="registerForm.invalid || isLoading()"
-                    (click)="onSubmit()">
-                    Register
-                </button>
-
-                <div class="spinner-container" *ngIf="isLoading()">
-                    <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
-                </div>
+                
+                @if(registerForm) {
+                    <button 
+                        mat-raised-button
+                        color="accent"
+                        class="btn-block"
+                        formcontrol="control"
+                        [disabled]="registerForm.invalid || isLoading() || registerForm.pending"
+                        (click)="onSubmit()">
+                        @if (!isLoading()) {
+                            Register
+                        }
+                        @if (isLoading()) {
+                            <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
+                        }
+                    </button>
+                }
             </form>
         </div>
     </mat-card>
