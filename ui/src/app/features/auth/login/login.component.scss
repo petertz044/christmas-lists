@@ -1,0 +1,175 @@
+$page-bg: linear-gradient(to bottom, #f0f8ff, #fff);
+$primary-red: #c62828;
+$secondary-green: #2e7d32;
+$gold: #fbc02d;
+$font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+.page-wrapper {
+  min-height: 100vh;
+  background: $page-bg;
+  font-family: $font-family;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .xmas-header {
+    text-align: center;
+    color: $primary-red;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 3rem;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+    }
+
+    p {
+      color: $secondary-green;
+      font-size: 1.2rem;
+      margin-top: 0.3rem;
+    }
+  }
+
+  .login-page-container {
+    display: flex;
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 16px;
+    overflow: hidden;
+
+    // Left side: Login Form
+    .login-wrapper {
+      flex: 1;
+      padding: 2.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+        .login-card {
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+
+        mat-card-title {
+            color: $secondary-green;
+            margin-bottom: 0.25rem;
+        }
+
+        p {
+            color: $secondary-green;
+            margin-bottom: 1.5rem;
+            max-width: 280px;
+        }
+
+
+        .login-form {
+          .full-width {
+            margin-bottom: 1.5rem;
+          }
+
+          mat-form-field {
+            outline-color: #0c440f;
+            width: 100%;
+            color:#0c440f;
+
+            mat-label {
+              color: $secondary-green;
+            }
+          }
+
+          .btn-block {
+            background-color: $primary-red;
+            color: white;
+            font-weight: 600;
+            width: 100%;
+            padding: 0.75rem 0;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+
+            &:hover:not(:disabled) {
+              background-color: darken($primary-red, 10%);
+            }
+
+            &:disabled {
+              background-color: #ccc;
+              color: #666;
+              cursor: not-allowed;
+            }
+          }
+
+        }
+      }
+
+      .register-text {
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        text-align: center;
+        color: $primary-red;
+
+        .font-bold {
+          color: $primary-red;
+          font-weight: 700;
+          cursor: pointer;
+          text-decoration: underline;
+
+          &:hover {
+            color: $secondary-green;
+          }
+        }
+      }
+    }
+    
+
+    // Right side: Image
+    .image-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      mat-card {
+        box-shadow: none;
+        background: transparent;
+        width: 100%;
+        max-width: 450px;
+
+        img.image-illustration {
+          width: 100%;
+          height: auto;
+          border-radius: 12px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 900px) {
+  .login-page-container {
+    flex-direction: column;
+
+    .login-wrapper, .image-wrapper {
+      flex: unset;
+      max-width: 100%;
+      padding: 1.5rem 2rem;
+    }
+
+    .image-wrapper {
+      order: -1;
+      padding-bottom: 0;
+      background: transparent;
+
+      mat-card img {
+        box-shadow: none;
+      }
+    }
+  }
+}
