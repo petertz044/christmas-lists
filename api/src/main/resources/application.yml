@@ -1,9 +1,5 @@
 spring:
   application:
     name: Christmas-List-Organizer
-  datasource: 
-    url: jdbc:postgresql://localhost:5432/christmas-list
-    username: Nick
-    driverClassName: org.postgresql.Driver
   profiles:
     active: dev
