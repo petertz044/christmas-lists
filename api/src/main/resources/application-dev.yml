@@ -1,5 +1,5 @@
 spring:
   datasource:
-    username: postgres
-    password: password
-    url: jdbc:postgresql://localhost:5432/christmas-list
+    username: {{DB_USER}}
+    password: {{DB_PASSWORD}}
+    url: jdbc:postgresql://database.nicholaszullo.com:5432/christmas?currentSchema=christmas_nonprod
