@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 
 @RestControllerAdvice
@@ -36,16 +37,10 @@ public class ExceptionTranslator {
         return ErrorResponse.create(e, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error, contact developer!");
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
+    @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse processExpiredJwt(ExpiredJwtException e){
-        return ErrorResponse.create(e, HttpStatus.UNAUTHORIZED, "JWT Expired!");
+    public ErrorResponse processExpiredJwt(JwtException e){
+        return ErrorResponse.create(e, HttpStatus.UNAUTHORIZED, "JWT Invalid!");
     }
     
-    @ExceptionHandler(MalformedJwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse processExpiredJwt(MalformedJwtException e){
-        return ErrorResponse.create(e, HttpStatus.UNAUTHORIZED, "JWT is Invalid!");
-    }
-
 }
