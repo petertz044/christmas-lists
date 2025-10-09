@@ -42,7 +42,6 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest request){
 
-
         RegisterResponse response = authService.saveUser(request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

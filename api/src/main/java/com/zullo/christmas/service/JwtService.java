@@ -1,13 +1,8 @@
 package com.zullo.christmas.service;
 
 import java.security.Key;
-import java.security.KeyFactory;
-import java.security.interfaces.RSAPrivateKey;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -38,8 +33,9 @@ public class JwtService {
     }
 
     public String generateJwt(User user){
+        LOG.debug("Generating a JWT for user", user.getUsername());
         return Jwts.builder()
-            .setSubject(user.getUsername())
+            .setSubject(String.valueOf(user.getId()))
             .setIssuedAt(Date.from(Instant.now()))
             .setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
             .claim("roles", user.getRole())
@@ -48,6 +44,7 @@ public class JwtService {
     }
 
     public User extractUserFromJwt(String jwt){
+        LOG.debug("Parsing JWT...");
         Claims parsedJwt = Jwts.parserBuilder()
             .setSigningKey(secretKey)
             .build()
@@ -56,8 +53,8 @@ public class JwtService {
 
         //User user = userRepository.getUserByUsername(username);
         User user = new User();
-        user.setUsername(parsedJwt.getSubject());
-        user.setRole(parsedJwt.get("roles", Character.class));
+        user.setId(Integer.valueOf(parsedJwt.getSubject()));
+        user.setRole(parsedJwt.get("roles", String.class));
 
         return user;
     }
