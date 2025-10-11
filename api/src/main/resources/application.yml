@@ -3,5 +3,8 @@ spring:
     name: Christmas-List-Organizer
   profiles:
     active: dev
+  security:
+    jwt:
+      secretKey: {{SECRET_KEY}}
 server:
-  port: 8081    
+  port: 8081
