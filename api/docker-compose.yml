@@ -1,8 +1,18 @@
 services:
-  db:
-    image: postgres:alpine
+#  db:
+#    image: postgres:alpine
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      POSTGRES_PASSWORD: password
+#      POSTGRES_DB: christmas-list
+  be:
+    container_name: christmas-be
+    image: zullo/christmas-be
     ports:
-      - "5432:5432"
+      - "8081:8081"
     environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: christmas-list
+      - SPRING_SECURITY_JWT_SECRETKEY=${SPRING_SECURITY_JWT_SECRETKEY}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    env_file: .env 
