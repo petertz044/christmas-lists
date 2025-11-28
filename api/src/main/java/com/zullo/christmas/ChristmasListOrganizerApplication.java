@@ -11,9 +11,7 @@ import io.jsonwebtoken.security.Keys;
 public class ChristmasListOrganizerApplication {
 
 	public static void main(String[] args) {
-		
-		System.out.println(Encoders.BASE64.encode(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded()));
-
+		//System.out.println(Encoders.BASE64.encode(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded()));
 		SpringApplication.run(ChristmasListOrganizerApplication.class, args);
 	}
 

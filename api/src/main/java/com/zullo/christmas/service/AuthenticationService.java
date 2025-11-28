@@ -37,7 +37,7 @@ public class AuthenticationService {
 
 
     public LoginResponse attemptLogin(LoginRequest request){
-        LOG.debug("Attempting login for user: " + request.getUsername());
+        LOG.debug("Attempting login for user: {}", request.getUsername());
         LoginResponse response = new LoginResponse();
 
         User user = userRepository.getUserByUsername(request.getUsername());
@@ -57,7 +57,7 @@ public class AuthenticationService {
     }
     
     public RegisterResponse saveUser(RegisterRequest request){
-        LOG.info("Registering user: " + request.getUsername());
+        LOG.info("Registering user: {}", request.getUsername());
         RegisterResponse response = new RegisterResponse();
 
         User user = new User();
@@ -72,7 +72,7 @@ public class AuthenticationService {
     }
 
     public ResponseEntity<String> updateUserRole(UpdateRoleRequest request){
-        LOG.info("Updating role for user: " + request.getTargetUsername());
+        LOG.info("Updating role for user: {}", request.getTargetUsername());
         User requestUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         boolean success = userRepository.updateUserRole(request.getTargetUsername(), requestUser.getId(), request.getTargetRole());
