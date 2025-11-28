@@ -24,7 +24,7 @@ public class UserRepository {
 
 
     public User getUserByUsername(String username){
-        LOG.info("Getting User Object for username", username);
+        LOG.info("Getting User Object for username {}", username);
         String query = UserSql.SELECT_USER_BY_USERNAME;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(UserSql.USERNAME, username);
@@ -39,7 +39,7 @@ public class UserRepository {
     }
 
     public User getUserById(Integer id){
-        LOG.info("Getting User Object for id", id);
+        LOG.info("Getting User Object for id {}", id);
         String query = UserSql.SELECT_USER_BY_ID;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(UserSql.ID, id);
@@ -55,7 +55,7 @@ public class UserRepository {
 
 
     public boolean insertUser(User user){
-        LOG.info("Inserting User Object ", user.toBuilder().password("REDACTED").build());
+        LOG.info("Inserting User Object {}", user.toBuilder().password("REDACTED").build());
         String query = UserSql.INSERT_USER;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(UserSql.USERNAME, user.getUsername());
@@ -65,7 +65,7 @@ public class UserRepository {
     }
 
     public boolean updateUserAfterLogin(User user){
-        LOG.info("Updating User Object after login ", user.toBuilder().password("REDACTED").build());
+        LOG.info("Updating User Object after login {}", user.toBuilder().password("REDACTED").build());
         String query = UserSql.UPDATE_USER_AUDIT;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(UserSql.USERNAME, user.getUsername());
