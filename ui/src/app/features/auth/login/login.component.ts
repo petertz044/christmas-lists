@@ -37,12 +37,12 @@ export class LoginComponent {
   
 
   loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
+    username: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required)
   });
 
-  get email() {
-    return this.loginForm.get('email')!;
+  get username() {
+    return this.loginForm.get('username')!;
   }
 
   get password() {
@@ -62,21 +62,23 @@ export class LoginComponent {
     const credentials = this.loginForm.value;
 
     this.auth.login(credentials as { username: string; password: string }).subscribe({
-      next: (success) => {
-        this.loginForm.enable()
-        this.isLoading.set(false);
-        if (success) {
-          this.snackBar.open('Login successful', 'Close', { duration: 3000 });
+      next: (res) => {
+        if (res.message === 'Invalid username or password!') {
+          this.loginForm.enable();
+          this.isLoading.set(false);
+          this.snackBar.open(res.message, 'Close', { duration: 3000 });
+        } else if (res.message === "Success") {
+          this.loginForm.enable()
+          this.isLoading.set(false);
+          this.snackBar.open(res.message, 'Close', { duration: 3000 });
           this.router.navigate(['/home']);
-        } else {
-          this.snackBar.open('Invalid credentials', 'Close', { duration: 3000 });
         }
       },
       error: (err) => {
         this.loginForm.enable()
         this.isLoading.set(false);
         console.error('Login error:', err);
-        this.snackBar.open('Login failed. Please try again.', 'Close', { duration: 3000 });
+        this.snackBar.open(`Login error: ${err}`, 'Close', { duration: 3000 });
       }
     });
   }
