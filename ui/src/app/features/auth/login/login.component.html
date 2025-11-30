@@ -10,8 +10,8 @@
                 <mat-card-header>
                     <mat-card-title>Login</mat-card-title>
                 </mat-card-header>
-                <p>🎁 Log in to Manage Your Lists 🎁</p>
-                <form class="login-form" [formGroup]="loginForm">
+                <p>Log in to Manage Your Lists</p>
+                <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
                     <mat-card-content>
                         <mat-form-field appearance="outline">
@@ -34,8 +34,8 @@
                         mat-raised-button
                         color="accent"
                         class="btn-block"
-                        [disabled]="loginForm.invalid || isLoading()"
-                        (click)="onSubmit()">
+                        type="submit"
+                        [disabled]="loginForm.invalid || isLoading()">
                         @if(!isLoading()) {
                             Login
                         }

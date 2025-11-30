@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { HeaderComponent } from '../../../core/header/header.component';
 
 @Component({
-  selector: 'app-user-list',
+  selector: 'app-create-group',
   imports: [HeaderComponent],
-  templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.scss'
+  templateUrl: './create-group.component.html',
+  styleUrl: './create-group.component.scss'
 })
-export class UserListComponent {
+export class CreateGroupComponent {
 
 }

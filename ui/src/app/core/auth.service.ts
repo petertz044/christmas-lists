@@ -1,35 +1,29 @@
 import { Injectable, signal } from '@angular/core';
-import { catchError, map, Observable, of, tap } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Injectable({
-   providedIn: 'root'
+  providedIn: 'root'
 })
+
 export class AuthService {
   private tokenKey = 'auth_token'
   private isLoggedIn = signal(this.hasToken());
-  private baseUrl = "jdbc:postgresql://database.nicholaszullo.com:5432/christmas"
+  private baseUrl = "https://christmas.nicholaszullo.com"
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(credentials: { email: string; password: string }): Observable<boolean> {
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    }
+  login(credentials: { username: string; password: string }): Observable<boolean> {
     
-    return this.http.post<{ token: string }>(`${this.baseUrl}/login`, credentials, httpOptions).pipe(
-      tap(res => {
-        localStorage.setItem('auth_token', res.token);
-        this.isLoggedIn.set(true);
-        this.router.navigate(["/home"])
-      }),
-      map(() => true),
-      catchError(() => of(false))
-    );
+    return this.http.post<any>(`${this.baseUrl}/auth/login`, credentials)
+      .pipe(
+        catchError(err => {
+          console.error('Sign in failed:', err);
+          this.isLoggedIn.set(false);
+          return throwError(() => err);
+        })
+      );
   }
 
   logout() {

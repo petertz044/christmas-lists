@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { HeaderComponent } from '../../../core/header/header.component';
-
 @Component({
-  selector: 'app-user-list',
+  selector: 'app-members',
   imports: [HeaderComponent],
-  templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.scss'
+  templateUrl: './members.component.html',
+  styleUrl: './members.component.scss'
 })
-export class UserListComponent {
+export class MembersComponent {
 
 }

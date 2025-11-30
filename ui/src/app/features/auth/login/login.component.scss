@@ -1,12 +1,21 @@
-$page-bg: linear-gradient(to bottom, #f0f8ff, #fff);
 $primary-red: #c62828;
 $secondary-green: #2e7d32;
 $gold: #fbc02d;
 $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
+/*
+Source - https://stackoverflow.com/q
+Posted by user12905562, modified by community. See post 'Timeline' for change history
+Retrieved 2025-11-28, License - CC BY-SA 4.0
+*/
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
+
 .page-wrapper {
   min-height: 100vh;
-  background: $page-bg;
   font-family: $font-family;
   padding: 2rem;
   display: flex;

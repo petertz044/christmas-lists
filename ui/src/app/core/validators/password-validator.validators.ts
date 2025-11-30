@@ -1,20 +1,18 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
+import { AbstractControl, ValidationErrors } from "@angular/forms";
 
 function passwordStrength(control: AbstractControl): ValidationErrors | null {
     const password = control.value
 
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
-    const hasNumeric = /[0-9]/.test(password);
     const hasSpecial = /[^a-zA-Z0-9_]/.test(password);
 
     const isValid = 
-        hasUpperCase && hasLowerCase && hasNumeric && hasSpecial;
+        hasUpperCase && hasLowerCase && hasSpecial;
     
     const validationErrors = {
         hasUpperCase: !hasUpperCase,
         hasLowerCase: !hasLowerCase,
-        hasNumeric: !hasNumeric,
         hasSpecial: !hasSpecial
     }
     

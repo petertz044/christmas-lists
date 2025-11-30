@@ -61,7 +61,7 @@ export class LoginComponent {
 
     const credentials = this.loginForm.value;
 
-    this.auth.login(credentials as { email: string; password: string }).subscribe({
+    this.auth.login(credentials as { username: string; password: string }).subscribe({
       next: (success) => {
         this.loginForm.enable()
         this.isLoading.set(false);
