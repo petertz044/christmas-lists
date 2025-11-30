@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/auth.service';
@@ -29,13 +29,20 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+
+  ngOnInit(): void {
+    const token = localStorage.getItem('jwt')
+    if (token) {
+      this.router.navigate(['/home'])
+    }
+  }
+
   hide = true;
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar)
   
-
   loginForm = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required)
@@ -74,11 +81,11 @@ export class LoginComponent {
           this.router.navigate(['/home']);
         }
       },
-      error: (err) => {
+      error: () => {
         this.loginForm.enable()
         this.isLoading.set(false);
-        console.error('Login error:', err);
-        this.snackBar.open(`Login error: ${err}`, 'Close', { duration: 3000 });
+        console.error('Login error.');
+        this.snackBar.open(`Login error: Please try again.`, 'Close', { duration: 3000 });
       }
     });
   }

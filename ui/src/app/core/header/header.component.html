@@ -10,27 +10,22 @@
             mat-button
             routerLink="/home"
             routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
             >Home</a>
 
             <a
             mat-button
             routerLink="/lists/user-list"
             routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
             >My List</a>
 
-            <!--View the members of your group and their lists-->
             <a
             mat-button
             routerLink="/groups"
             routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
             >My Groups</a>
-
-            <!--Set a budget, track your purchases, organize your shopping-->
-            <a
-            mat-button
-            routerLink="/shopping"
-            routerLinkActive="active-link"
-            >My Shopping</a>
         </span>
     </mat-toolbar-row>
 </mat-toolbar>

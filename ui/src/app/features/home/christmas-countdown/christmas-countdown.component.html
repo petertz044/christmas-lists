@@ -1,0 +1,21 @@
+<div class="countdown-card">
+    <h2>Countdown to Christmas</h2>
+    <div class="timer">
+        <div class="time-box">
+            <span class="number">{{ formatNumber(days()) }}</span>
+            <span class="label">Days</span>
+        </div>
+        <div class="time-box">
+            <span class="number">{{ formatNumber(hours()) }}</span>
+            <span class="label">Hours</span>
+        </div>
+        <div class="time-box">
+            <span class="number">{{ formatNumber(minutes()) }}</span>
+            <span class="label">Minutes</span>
+        </div>
+        <div class="time-box">
+            <span class="number">{{ formatNumber(seconds()) }}</span>
+            <span class="label">Seconds</span>
+        </div>
+    </div>
+</div>

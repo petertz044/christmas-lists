@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from '../../core/header/header.component';
+import { ChristmasCountdownComponent } from './christmas-countdown/christmas-countdown.component';
 
 @Component({
   selector: 'app-home',
   imports: [
-    HeaderComponent
+    ChristmasCountdownComponent
   ],
   templateUrl: './home.component.html',
 })

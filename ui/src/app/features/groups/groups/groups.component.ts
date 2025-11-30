@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from '../../../core/header/header.component';
 
 @Component({
   selector: 'app-groups',
-  imports: [HeaderComponent],
+  imports: [],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.scss'
 })

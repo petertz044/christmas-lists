@@ -5,7 +5,6 @@ import { PageNotFoundComponent } from './core/page-not-found/page-not-found.comp
 import { RegisterComponent } from './features/auth/register/register.component';
 import { UserListComponent } from './features/lists/user-list/user-list.component';
 import { GroupsComponent } from './features/groups/groups/groups.component';
-import { MySpendingComponent } from './features/shopping/my-spending/my-spending.component';
 
 export const routes: Routes = [
     {
@@ -32,11 +31,6 @@ export const routes: Routes = [
         path: 'groups',
         title: 'My Groups',
         component: GroupsComponent
-    },
-    {
-        path: 'shopping',
-        title: 'My List',
-        component: MySpendingComponent
     },
     {
         path: '',
