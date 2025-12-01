@@ -3,3 +3,6 @@ spring:
     name: Christmas-List-Organizer
   profiles:
     active: dev
+  security:
+    jwt:
+      secretKey: {{SECRET_KEY}}

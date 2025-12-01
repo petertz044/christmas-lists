@@ -4,4 +4,4 @@ spring:
     password: {{DB_PASSWORD}}
     url: jdbc:postgresql://database.nicholaszullo.com:5432/christmas?currentSchema=christmas_nonprod
 server:
-  port: 8082
+  port: 8081

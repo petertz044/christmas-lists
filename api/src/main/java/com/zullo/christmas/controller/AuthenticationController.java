@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.zullo.christmas.model.Api.RegisterResponse;
 import com.zullo.christmas.model.Api.TestRequest;
 import com.zullo.christmas.service.AuthenticationService;
 
+@CrossOrigin()
 @RestController()
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -30,7 +32,6 @@ public class AuthenticationController {
         this.authService = authenticationService;
     }
 
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request){
 
@@ -41,7 +42,6 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest request){
-
 
         RegisterResponse response = authService.saveUser(request);
 
