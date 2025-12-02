@@ -7,9 +7,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.zullo.christmas.constants.sql.Common;
 import com.zullo.christmas.constants.sql.UserSql;
-import com.zullo.christmas.model.Database.User;
-
+import com.zullo.christmas.model.database.User;
 
 @Repository
 public class UserRepository {
@@ -18,67 +18,65 @@ public class UserRepository {
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    public UserRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate){
+    public UserRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-
-    public User getUserByUsername(String username){
+    public User getUserByUsername(String username) {
         LOG.info("Getting User Object for username {}", username);
         String query = UserSql.SELECT_USER_BY_USERNAME;
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue(UserSql.USERNAME, username);
+        params.addValue(Common.USERNAME, username);
         User user = new User();
         namedParameterJdbcTemplate.query(query, params, rs -> {
-            user.setId(rs.getInt(UserSql.ID));
-            user.setUsername(rs.getString(UserSql.USERNAME));
-            user.setPassword(rs.getString(UserSql.PASSWORD));
-            user.setRole(rs.getString(UserSql.ROLE));
+            user.setId(rs.getInt(Common.ID));
+            user.setUsername(rs.getString(Common.USERNAME));
+            user.setPassword(rs.getString(Common.PASSWORD));
+            user.setRole(rs.getString(Common.ROLE));
         });
         return user;
     }
 
-    public User getUserById(Integer id){
+    public User getUserById(Integer id) {
         LOG.info("Getting User Object for id {}", id);
         String query = UserSql.SELECT_USER_BY_ID;
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue(UserSql.ID, id);
+        params.addValue(Common.ID, id);
         User user = new User();
         namedParameterJdbcTemplate.query(query, params, rs -> {
-            user.setId(rs.getInt(UserSql.ID));
-            user.setUsername(rs.getString(UserSql.USERNAME));
-            user.setPassword(rs.getString(UserSql.PASSWORD));
-            user.setRole(rs.getString(UserSql.ROLE));
+            user.setId(rs.getInt(Common.ID));
+            user.setUsername(rs.getString(Common.USERNAME));
+            user.setPassword(rs.getString(Common.PASSWORD));
+            user.setRole(rs.getString(Common.ROLE));
         });
         return user;
     }
 
-
-    public boolean insertUser(User user){
+    public boolean insertUser(User user) {
         LOG.info("Inserting User Object {}", user.toBuilder().password("REDACTED").build());
         String query = UserSql.INSERT_USER;
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue(UserSql.USERNAME, user.getUsername());
-        params.addValue(UserSql.PASSWORD, user.getPassword());
-        params.addValue(UserSql.ROLE, user.getRole());
+        params.addValue(Common.USERNAME, user.getUsername());
+        params.addValue(Common.PASSWORD, user.getPassword());
+        params.addValue(Common.ROLE, user.getRole());
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
-    public boolean updateUserAfterLogin(User user){
+    public boolean updateUserAfterLogin(User user) {
         LOG.info("Updating User Object after login {}", user.toBuilder().password("REDACTED").build());
         String query = UserSql.UPDATE_USER_AUDIT;
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue(UserSql.USERNAME, user.getUsername());
+        params.addValue(Common.USERNAME, user.getUsername());
         return namedParameterJdbcTemplate.update(query, params) == 1;
     }
 
-    public boolean updateUserRole(String target, Integer adminId, String role){
+    public boolean updateUserRole(Integer target, Integer adminId, String role) {
         LOG.info("Updating User Role for user: {} to role {}", target, role);
         String query = UserSql.UPDATE_USER_ROLE;
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue(UserSql.ROLE, role);
-        params.addValue(UserSql.USERNAME, target);
-        params.addValue(UserSql.USER_ID_LAST_MODIFIED, adminId);
+        params.addValue(Common.ROLE, role);
+        params.addValue(Common.ID, target);
+        params.addValue(Common.USER_ID_LAST_MODIFIED, adminId);
         return namedParameterJdbcTemplate.update(query, params) == 1;
     }
 }

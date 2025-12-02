@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
 
 @RestControllerAdvice
 public class ExceptionTranslator {
@@ -40,6 +38,7 @@ public class ExceptionTranslator {
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse processExpiredJwt(JwtException e){
+        LOG.debug("Invalid JWT Occurred");
         return ErrorResponse.create(e, HttpStatus.UNAUTHORIZED, "JWT Invalid!");
     }
     

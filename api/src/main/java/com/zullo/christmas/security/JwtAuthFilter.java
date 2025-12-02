@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import com.zullo.christmas.model.Database.User;
+import com.zullo.christmas.model.database.User;
 import com.zullo.christmas.service.JwtService;
 
 import jakarta.servlet.FilterChain;

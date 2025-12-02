@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.zullo.christmas.model.Database.User;
+import com.zullo.christmas.model.database.User;
 import com.zullo.christmas.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;

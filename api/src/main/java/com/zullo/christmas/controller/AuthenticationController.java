@@ -7,17 +7,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zullo.christmas.model.Api.LoginRequest;
-import com.zullo.christmas.model.Api.LoginResponse;
-import com.zullo.christmas.model.Api.RegisterRequest;
-import com.zullo.christmas.model.Api.RegisterResponse;
-import com.zullo.christmas.model.Api.TestRequest;
+import com.zullo.christmas.model.api.LoginRequest;
+import com.zullo.christmas.model.api.LoginResponse;
+import com.zullo.christmas.model.api.RegisterRequest;
+import com.zullo.christmas.model.api.RegisterResponse;
+import com.zullo.christmas.model.api.TestRequest;
+import com.zullo.christmas.model.database.User;
 import com.zullo.christmas.service.AuthenticationService;
+import com.zullo.christmas.service.JwtService;
 
 @CrossOrigin()
 @RestController()
@@ -26,35 +30,52 @@ public class AuthenticationController {
     Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
 
     AuthenticationService authService;
+    JwtService jwtService;
 
     @Autowired
-    public AuthenticationController(AuthenticationService authenticationService){
+    public AuthenticationController(AuthenticationService authenticationService, JwtService jwtService) {
         this.authService = authenticationService;
+        this.jwtService = jwtService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request){
+    @PostMapping("/v1/login")
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request) {
 
         LoginResponse response = authService.attemptLogin(request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest request){
+    @PostMapping("/v1/register")
+    public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest request) {
 
         RegisterResponse response = authService.saveUser(request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/protected")
-    public String testAuthProtection(){
+    @PostMapping("/v1/role/{userId}")
+    public ResponseEntity<String> changeUserRole(@PathVariable Integer userId, @RequestHeader(name = "Authorization") String jwt){
+        User requestor = jwtService.extractUserFromJwt(jwt);
+        if (!requestor.getRole().equals("A")){
+            return new ResponseEntity<>("User is not an Admin and cannot change the role of a user", HttpStatus.UNAUTHORIZED);
+        }
+        
+        //TODO: add a way to choose role from request
+        authService.updateUserRole(userId, requestor.getId());
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+
+    }
+
+
+    @GetMapping("/v1/protected")
+    public String testAuthProtection() {
         return "Success!";
     }
 
-    @PostMapping("/testing")
-    public String testing(@RequestBody TestRequest request){
+    @PostMapping("/v1/testing")
+    public String testing(@RequestBody TestRequest request) {
         return authService.test(request);
     }
 

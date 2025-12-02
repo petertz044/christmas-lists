@@ -2,6 +2,7 @@ CREATE TABLE group_mapping_user (
 	id serial NOT NULL,
 	group_id integer NOT null REFERENCES "group"(id),
 	user_id integer NOT null REFERENCES "user"(id),
+	is_active boolean NOT NULL,
 	dt_crtd timestamp NOT NULL,
 	dt_last_modified timestamp NOT NULL,
 	user_id_last_modified text null,

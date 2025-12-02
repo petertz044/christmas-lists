@@ -35,7 +35,7 @@ public class WebSecurityConfig {
             .requestMatchers("/auth/testing").permitAll()
             .requestMatchers("/auth/register").permitAll()
             .requestMatchers("/auth/login").permitAll()
-            .requestMatchers("/auth/protected").authenticated()
+            .anyRequest().authenticated()
         );
         return http.build();
     }
