@@ -1,6 +1,6 @@
 package com.zullo.christmas.constants.sql;
 
-public class GroupSQL {
+public class GroupSql {
     public static final String CREATE_GROUP = String.format("""
             INSERT INTO "group"(
                 title,
@@ -20,20 +20,19 @@ public class GroupSQL {
                 timezone('utc', now()),
                 :%s
             )
-            """, Common.TITLE, Common.DESCRIPTION, Common.USER_ID_OWNER, Common.USER_ID_LAST_MODIFIED);
+            """, CommonSql.TITLE, CommonSql.DESCRIPTION, CommonSql.USER_ID_OWNER, CommonSql.USER_ID_LAST_MODIFIED);
 
     public static final String UPDATE_GROUP = String.format("""
-            UPDATE list SET
+            UPDATE "group" SET
                 title=:%s,
                 description=:%s,
-                user_id_owner=:%s,
                 is_active=:%s,
                 dt_last_modified=timezone('utc', now()),
                 user_id_last_modified=:%s
             WHERE
                 id=:%s
-            """, Common.TITLE, Common.DESCRIPTION, Common.USER_ID_OWNER, Common.IS_ACTIVE, Common.USER_ID_LAST_MODIFIED,
-            Common.ID);
+            """, CommonSql.TITLE, CommonSql.DESCRIPTION, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED,
+            CommonSql.ID);
 
     public static final String CREATE_GROUP_MAPPING_USER = String.format("""
             INSERT INTO "group_mapping_user" (
@@ -52,7 +51,7 @@ public class GroupSQL {
                 timezone('utc', now()),
                 :%s
             )
-            """, Common.GROUP_ID, Common.USER_ID, Common.USER_ID_LAST_MODIFIED);
+            """, CommonSql.GROUP_ID, CommonSql.USER_ID, CommonSql.USER_ID_LAST_MODIFIED);
 
     public static final String UPDATE_GROUP_MAPPING_USER = String.format("""
             UPDATE group_mapping_user SET
@@ -61,9 +60,10 @@ public class GroupSQL {
                 is_active=:%s,
                 dt_last_modified=timezone('utc', now()),
                 user_id_last_modified=:%s
-            WHERE 
+            WHERE
                 id=:%s
-            """, Common.GROUP_ID, Common.USER_ID, Common.IS_ACTIVE, Common.USER_ID_LAST_MODIFIED, Common.ID);
+            """, CommonSql.GROUP_ID, CommonSql.USER_ID, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED,
+            CommonSql.ID);
 
     public static final String CREATE_GROUP_MAPPING_LIST = String.format("""
             INSERT INTO "group_mapping_list" (
@@ -82,7 +82,7 @@ public class GroupSQL {
                 timezone('utc', now()),
                 :%s
             )
-            """, Common.GROUP_ID, Common.LIST_ID, Common.USER_ID_LAST_MODIFIED);
+            """, CommonSql.GROUP_ID, CommonSql.LIST_ID, CommonSql.USER_ID_LAST_MODIFIED);
 
     public static final String UPDATE_GROUP_MAPPING_LIST = String.format("""
             UPDATE group_mapping_list SET
@@ -91,27 +91,37 @@ public class GroupSQL {
                 is_active=:%s,
                 dt_last_modified=timezone('utc', now()),
                 user_id_last_modified=:%s
-            WHERE 
+            WHERE
                 id=:%s
-            """, Common.GROUP_ID, Common.LIST_ID, Common.IS_ACTIVE, Common.USER_ID_LAST_MODIFIED, Common.ID);
+            """, CommonSql.GROUP_ID, CommonSql.LIST_ID, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED,
+            CommonSql.ID);
 
     public static final String UPDATE_GROUP_MAPPING_LIST_INACTIVE = String.format("""
             UPDATE group_mapping_list SET
                 is_active=:%s,
                 dt_last_modified=timezone('utc', now()),
                 user_id_last_modified=:%s
-            WHERE 
+            WHERE
                 id=:%s
-            """, Common.IS_ACTIVE, Common.USER_ID_LAST_MODIFIED, Common.ID);
+            """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
 
     public static final String UPDATE_GROUP_MAPPING_USER_INACTIVE = String.format("""
             UPDATE group_mapping_user SET
                 is_active=:%s,
                 dt_last_modified=timezone('utc', now()),
                 user_id_last_modified=:%s
-            WHERE 
+            WHERE
                 id=:%s
-            """, Common.IS_ACTIVE, Common.USER_ID_LAST_MODIFIED, Common.ID);
+            """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
+            
+    public static final String UPDATE_GROUP_INACTIVE = String.format("""
+            UPDATE "group" SET
+                is_active=:%s,
+                dt_last_modified=timezone('utc', now()),
+                user_id_last_modified=:%s
+            WHERE
+                id=:%s
+            """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
 
     public static final String SELECT_ACTIVE_GROUPS_FOR_USER_ID = String.format("""
             SELECT
@@ -125,7 +135,7 @@ public class GroupSQL {
             WHERE
                 user_id=:%s AND
                 is_active=true
-            """, Common.USER_ID);
+            """, CommonSql.USER_ID);
 
     public static final String SELECT_ACTIVE_LISTS_FOR_GROUP_IDS = String.format("""
             SELECT
@@ -141,7 +151,7 @@ public class GroupSQL {
                 gml.group_id IN (:%s) AND
                 gml.is_active=true
                 l.is_active=true
-            """, Common.GROUP_ID);
+            """, CommonSql.GROUP_ID);
 
     public static final String SELECT_ACTIVE_LISTS_FOR_OWNER = String.format("""
             SELECT
@@ -153,15 +163,29 @@ public class GroupSQL {
             WHERE
                 is_active=true AND
                 user_id_owner=:%s
-            """, Common.USER_ID_OWNER);
+            """, CommonSql.USER_ID_OWNER);
 
     public static final String SELECT_ACTIVE_GROUPS_FOR_LIST_ID = String.format("""
-            SELECT 
+            SELECT
                 group_id
             FROM
                 group_mapping_list
             WHERE
                 list_id = :%s
-            """, Common.LIST_ID);
-    
+            """, CommonSql.LIST_ID);
+    public static final String SELECT_ALL_GROUPS = """
+            SELECT 
+                id,
+                title,
+                description,
+                user_id_owner,
+                is_active,
+                dt_crtd,
+                dt_last_modified,
+                user_id_last_modified
+            FROM 
+                "group"
+            WHERE
+                is_active=true
+            """;
 }

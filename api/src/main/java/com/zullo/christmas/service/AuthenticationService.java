@@ -65,11 +65,11 @@ public class AuthenticationService {
         return response;
     }
 
-    public boolean updateUserRole(Integer userIdTarget, Integer userIdRequestor) {
+    public boolean updateUserRole(Integer userIdTarget, Integer userIdRequestor, String role) {
         LOG.info("Updating role for user: {}", userIdTarget);
         User requestUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return userRepository.updateUserRole(userIdTarget, requestUser.getId(), "A");
+        return userRepository.updateUserRole(userIdTarget, requestUser.getId(), role);
     }
 
     public String test(TestRequest request) {

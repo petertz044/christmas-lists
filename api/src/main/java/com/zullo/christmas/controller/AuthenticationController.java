@@ -1,5 +1,7 @@
 package com.zullo.christmas.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zullo.christmas.constants.ApplicationConstants;
 import com.zullo.christmas.model.api.LoginRequest;
 import com.zullo.christmas.model.api.LoginResponse;
 import com.zullo.christmas.model.api.RegisterRequest;
 import com.zullo.christmas.model.api.RegisterResponse;
+import com.zullo.christmas.model.api.RoleChangeRequest;
 import com.zullo.christmas.model.api.TestRequest;
 import com.zullo.christmas.model.database.User;
 import com.zullo.christmas.service.AuthenticationService;
@@ -55,14 +59,18 @@ public class AuthenticationController {
     }
 
     @PostMapping("/v1/role/{userId}")
-    public ResponseEntity<String> changeUserRole(@PathVariable Integer userId, @RequestHeader(name = "Authorization") String jwt){
+    public ResponseEntity<String> changeUserRole(@RequestBody RoleChangeRequest request, 
+                                                 @PathVariable Integer userId, 
+                                                 @RequestHeader(name = "Authorization") String jwt){
         User requestor = jwtService.extractUserFromJwt(jwt);
         if (!requestor.getRole().equals("A")){
             return new ResponseEntity<>("User is not an Admin and cannot change the role of a user", HttpStatus.UNAUTHORIZED);
         }
+        if (!List.of(ApplicationConstants.ADMIN, ApplicationConstants.USER).contains(request.role())){
+            return new ResponseEntity<>("Requested role is invalid", HttpStatus.BAD_REQUEST);
+        }
         
-        //TODO: add a way to choose role from request
-        authService.updateUserRole(userId, requestor.getId());
+        authService.updateUserRole(userId, requestor.getId(), request.role());
 
         return new ResponseEntity<>(null, HttpStatus.OK);
 

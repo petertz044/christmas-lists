@@ -9,7 +9,7 @@ public class UserSql {
                 U.role, 
                 U.user_id_last_modified 
             FROM "user" U WHERE U.username = :%s
-            """, Common.USERNAME);
+            """, CommonSql.USERNAME);
     public static final String SELECT_USER_BY_ID = String.format("""
             SELECT 
                 U.id, 
@@ -18,7 +18,7 @@ public class UserSql {
                 U.role, 
                 U.user_id_last_modified 
             FROM "user" U WHERE U.id = :%s
-            """, Common.ID);
+            """, CommonSql.ID);
 
     public static final String INSERT_USER = String.format("""
                 INSERT INTO "user"(
@@ -35,7 +35,7 @@ public class UserSql {
                     timezone('utc', now()),
                     timezone('utc', now())
                 )
-                """, Common.USERNAME, Common.PASSWORD, Common.ROLE);
+                """, CommonSql.USERNAME, CommonSql.PASSWORD, CommonSql.ROLE);
     public static final String UPDATE_USER_AUDIT = String.format("""
             UPDATE
                 "user" u
@@ -43,7 +43,7 @@ public class UserSql {
                 dt_last_login = timezone('utc', now())
             WHERE
                 u.username =:%s;
-            """, Common.USERNAME);
+            """, CommonSql.USERNAME);
 
     public static final String UPDATE_USER_ROLE = String.format("""
             UPDATE
@@ -54,5 +54,5 @@ public class UserSql {
                 dt_last_modified = timezone('utc', now())
             WHERE
                 u.id =:%s;
-            """, Common.ROLE, Common.USER_ID_LAST_MODIFIED, Common.ID);
+            """, CommonSql.ROLE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
 }

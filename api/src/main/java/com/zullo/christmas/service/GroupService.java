@@ -24,6 +24,22 @@ public class GroupService {
         this.groupRepository = groupRepository;
     }
 
+    public List<Group> getGroups(){
+        return groupRepository.getGroups();
+    }
+
+    public boolean createGroup(Group request){
+        return groupRepository.createGroup(request);
+    }
+
+    public boolean updateGroup(Group request){
+        return groupRepository.updateGroup(request);
+    }
+
+    public boolean deactivateGroup(Integer id, User user){
+        return groupRepository.deactivateGroup(id, user);
+    }
+
     public boolean createGroupMappingList(GroupMappingList request) {
         // TODO: Validate user is admin or member of group
         // TODO: Validate a mapping between these IDs does not already exist

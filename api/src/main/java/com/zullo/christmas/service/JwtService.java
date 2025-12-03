@@ -37,7 +37,7 @@ public class JwtService {
         return Jwts.builder()
             .setSubject(String.valueOf(user.getId()))
             .setIssuedAt(Date.from(Instant.now()))
-            .setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
+            .setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)))
             .claim("roles", user.getRole())
             .signWith(secretKey)
             .compact();
@@ -45,6 +45,9 @@ public class JwtService {
 
     public User extractUserFromJwt(String jwt){
         LOG.debug("Parsing JWT...");
+        if (jwt.startsWith("Bearer ")){
+            jwt = jwt.substring(7);
+        }
         Claims parsedJwt = Jwts.parserBuilder()
             .setSigningKey(secretKey)
             .build()

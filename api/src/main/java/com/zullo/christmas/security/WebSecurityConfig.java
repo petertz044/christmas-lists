@@ -32,9 +32,11 @@ public class WebSecurityConfig {
         //.cors((cors) -> cors.disable())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/auth/testing").permitAll()
-            .requestMatchers("/auth/register").permitAll()
-            .requestMatchers("/auth/login").permitAll()
+            .requestMatchers("/auth/v1/testing").permitAll()
+            .requestMatchers("/auth/v1/register").permitAll()
+            .requestMatchers("/auth/v1/login").permitAll()
+            .requestMatchers("/swagger-ui/index.html").permitAll()
+            .requestMatchers("/v3/api-docs").permitAll()
             .anyRequest().authenticated()
         );
         return http.build();

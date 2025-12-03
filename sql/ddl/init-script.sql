@@ -32,11 +32,11 @@ COMMENT ON COLUMN "user".dt_last_login IS 'Date user last logged in to the appli
 COMMENT ON COLUMN "user".dt_last_modified IS 'Date entry was last modified';
 COMMENT ON COLUMN "user".user_id_last_modified IS 'User that last modified this entry';
 
-
 CREATE TABLE "group" (
 	id serial NOT NULL,
 	title text NOT NULL,
 	description text NULL,
+	user_id_owner integer NOT null references "user"(id),
 	is_active boolean NOT NULL,
 	dt_crtd timestamp NOT NULL,
 	dt_last_modified timestamp NOT NULL,
@@ -50,11 +50,11 @@ COMMENT ON TABLE "group" IS 'Groups that users and lists will belong to';
 COMMENT ON COLUMN "group".id IS 'PK of group';
 COMMENT ON COLUMN "group".title IS 'Title of the group';
 COMMENT ON COLUMN "group".description IS 'Description of the group';
+COMMENT ON COLUMN "group".user_id_owner IS 'User that owns this item';
 COMMENT ON COLUMN "group".is_active IS 'If this group should be considered by logic';
 COMMENT ON COLUMN "group".dt_crtd IS 'Date entry was created';
 COMMENT ON COLUMN "group".dt_last_modified IS 'Date entry was last modified';
 COMMENT ON COLUMN "group".user_id_last_modified IS 'User that last modified this entry';
-
 
 CREATE TABLE list (
 	id serial NOT NULL,

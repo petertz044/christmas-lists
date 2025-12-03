@@ -20,7 +20,7 @@ public class ListSql {
                 timezone('utc', now()),
                 :%s
             )
-            """, Common.TITLE, Common.DESCRIPTION, Common.USER_ID_OWNER, Common.USER_ID_LAST_MODIFIED);
+            """, CommonSql.TITLE, CommonSql.DESCRIPTION, CommonSql.USER_ID_OWNER, CommonSql.USER_ID_LAST_MODIFIED);
 
     public static final String UPDATE_LIST = String.format("""
             UPDATE list SET
@@ -31,7 +31,7 @@ public class ListSql {
                 user_id_last_modified=:%s
             WHERE
                 id=:%s
-            """, Common.TITLE, Common.DESCRIPTION, Common.IS_ACTIVE, Common.USER_ID_LAST_MODIFIED, Common.ID);
+            """, CommonSql.TITLE, CommonSql.DESCRIPTION, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
 
     public static final String CREATE_LIST_ENTRY = String.format("""
             INSERT INTO "list_entry"(
@@ -39,7 +39,7 @@ public class ListSql {
                 title,
                 description,
                 priority,
-                listId,
+                list_id,
                 user_id_owner,
                 is_purchased,
                 is_active,
@@ -60,8 +60,8 @@ public class ListSql {
                 timezone('utc', now()),
                 :%s
             )
-            """, Common.URL, Common.TITLE, Common.DESCRIPTION, Common.PRIORITY, Common.LIST_ID,
-            Common.USER_ID_OWNER, Common.IS_PURCHASED, Common.USER_ID_LAST_MODIFIED);
+            """, CommonSql.URL, CommonSql.TITLE, CommonSql.DESCRIPTION, CommonSql.PRIORITY, CommonSql.LIST_ID,
+            CommonSql.USER_ID_OWNER, CommonSql.IS_PURCHASED, CommonSql.USER_ID_LAST_MODIFIED);
 
     public static final String UPDATE_LIST_ENTRY = String.format("""
             UPDATE "list_entry" SET
@@ -77,8 +77,8 @@ public class ListSql {
             WHERE
                 id=:%s AND
                 list_id=:%s
-            """, Common.URL, Common.TITLE, Common.DESCRIPTION, Common.PRIORITY, Common.IS_PURCHASED,
-            Common.USER_ID_PURCHASED, Common.IS_ACTIVE, Common.USER_ID_LAST_MODIFIED, Common.ID, Common.LIST_ID);
+            """, CommonSql.URL, CommonSql.TITLE, CommonSql.DESCRIPTION, CommonSql.PRIORITY, CommonSql.IS_PURCHASED,
+            CommonSql.USER_ID_PURCHASED, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID, CommonSql.LIST_ID);
 
     public static final String SELECT_LIST_ENTRY_BY_LIST_IDS = String.format("""
             SELECT
@@ -99,7 +99,7 @@ public class ListSql {
             WHERE
                 list_id IN :%s AND
                 is_active = true
-            """, Common.LIST_ID);
+            """, CommonSql.LIST_ID);
 
     public static final String SELECT_LIST_BY_ID = String.format("""
             SELECT
@@ -114,7 +114,7 @@ public class ListSql {
                 "list"
             WHERE
                 id=:%s
-            """, Common.LIST_ID);
+            """, CommonSql.LIST_ID);
 
     public static final String UPDATE_LIST_ENTITY_INACTIVE = String.format("""
             UPDATE "list" SET
@@ -123,7 +123,7 @@ public class ListSql {
                 user_id_last_modified=:%s
             WHERE
                 id=:%s
-            """, Common.IS_ACTIVE, Common.USER_ID_LAST_MODIFIED, Common.ID);
+            """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
 
     public static final String UPDATE_LIST_ENTRY_INACTIVE = String.format("""
             UPDATE list_entry SET
@@ -132,5 +132,5 @@ public class ListSql {
                 user_id_last_modified=:%s
             WHERE
                 id=:%s
-            """, Common.IS_ACTIVE, Common.USER_ID_LAST_MODIFIED, Common.ID);
+            """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
 };

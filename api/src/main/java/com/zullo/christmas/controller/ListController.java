@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zullo.christmas.model.database.Group;
-import com.zullo.christmas.model.database.GroupMappingList;
+
 import com.zullo.christmas.model.database.ListEntity;
 import com.zullo.christmas.model.database.ListEntry;
 import com.zullo.christmas.model.database.User;
@@ -73,7 +72,7 @@ public class ListController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PostMapping("/v1/list/{listId")
+    @PostMapping("/v1/list/{listId}")
     public ResponseEntity<String> updateList(@RequestBody ListEntity request, @PathVariable Integer listId) {
         LOG.debug("Initiating updateList id={} request={}", listId, request);
         if (request.getId() == null || request.getId() == listId){

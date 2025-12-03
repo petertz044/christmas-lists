@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zullo.christmas.constants.ApplicationConstants;
 import com.zullo.christmas.model.database.Group;
 import com.zullo.christmas.model.database.GroupMappingList;
 import com.zullo.christmas.model.database.GroupMappingUser;
@@ -46,17 +47,44 @@ public class GroupController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/v1/group")
-    public ResponseEntity<String> createGroup(){
+    @GetMapping("/v1/groups")
+    public ResponseEntity<List<Group>> getAllGroups(@RequestHeader(name = "Authorization") String jwt){
+        User user = jwtService.extractUserFromJwt(jwt);
+        if (!user.getRole().equals(ApplicationConstants.ADMIN)){
+            LOG.debug("Non admin user {} cannot access all groups", user);
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
 
+        List<Group> groups = groupService.getGroups();
+
+        return new ResponseEntity<>(groups, HttpStatus.OK);
+    }
+
+    @PostMapping("/v1/group")
+    public ResponseEntity<String> createGroup(@RequestHeader(name = "Authorization") String jwt, @RequestBody Group request){
+        
+        groupService.createGroup(request);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping("/v1/group/{groupId}")
-    public ResponseEntity<String> updateGroup(@PathVariable Integer groupId){
+    public ResponseEntity<String> updateGroup(@RequestHeader(name = "Authorization") String jwt, 
+                                              @RequestBody Group request, 
+                                              @PathVariable Integer groupId){
+        User user = jwtService.extractUserFromJwt(jwt);                                 
+        request.setId(groupId);
+        request.setUserIdLastModified(user.getId());
+        
+        groupService.updateGroup(request);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 
+    @DeleteMapping("/v1/group/{groupId}")
+    public ResponseEntity<String> deleteGroup(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer groupId){
+        User user = jwtService.extractUserFromJwt(jwt);
 
+        groupService.deactivateGroup(groupId, user);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

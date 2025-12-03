@@ -1,6 +1,6 @@
 package com.zullo.christmas.constants.sql;
 
-public class Common {
+public class CommonSql {
     public static final String ID = "id";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
