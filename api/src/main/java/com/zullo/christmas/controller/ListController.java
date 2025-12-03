@@ -77,11 +77,11 @@ public class ListController {
     }
 
     @PostMapping("/v1/list/{listId}")
-    public ResponseEntity<String> updateList(@RequestBody ListEntity request, @PathVariable Integer listId) {
+    public ResponseEntity<String> updateList(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntity request, @PathVariable Integer listId) {
         LOG.debug("Initiating updateList id={} request={}", listId, request);
-        if (request.getId() == null || request.getId() == listId){
-            return new ResponseEntity<>("Request ID does not match URL ID", HttpStatus.BAD_REQUEST);
-        }
+        User user = jwtService.extractUserFromJwt(jwt);
+        request.setUserIdLastModified(user.getId());
+        request.setId(listId);
 
         listService.updateList(request);
 
@@ -109,10 +109,12 @@ public class ListController {
     }
 
     @PostMapping("/v1/list/{listId}/entry")
-    public ResponseEntity<Integer> createListEntry(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntry request) {
+    public ResponseEntity<Integer> createListEntry(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntry request, @PathVariable Integer listId) {
         LOG.debug("Initiating createList request={}", request);
         User user = jwtService.extractUserFromJwt(jwt);
         request.setUserIdOwner(user.getId());
+        request.setListId(listId);
+        request.setUserIdLastModified(user.getId());
 
         //TODO: Validate user is in group or admin
         Integer id = listService.createListEntry(request);
@@ -126,6 +128,7 @@ public class ListController {
         User user = jwtService.extractUserFromJwt(jwt);
         request.setId(entryId);
         request.setListId(listId);
+        request.setUserIdLastModified(user.getId());
         //TODO: Validate user is in group or admin
         listService.updateListEntry(request, user);
 

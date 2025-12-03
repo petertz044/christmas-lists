@@ -137,13 +137,14 @@ public class GroupRepository {
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
-    public boolean deactivateGroupMappingList(Integer id, User user){
-        LOG.info("Updating GroupMappingList Object to INACTIVE {}", id);
+    public boolean deactivateGroupMappingList(Integer listId, Integer groupId, User user){
+        LOG.info("Updating GroupMappingList Object to INACTIVE list={}, group={}", listId, groupId);
         String query = GroupSql.UPDATE_GROUP_MAPPING_LIST_INACTIVE;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.IS_ACTIVE, false);
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, user.getId());
-        params.addValue(CommonSql.ID, id);
+        params.addValue(CommonSql.LIST_ID, listId);
+        params.addValue(CommonSql.GROUP_ID, groupId);
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
@@ -218,13 +219,14 @@ public class GroupRepository {
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
-    public boolean deactivateGroupMappingUser(Integer id, User user){
-        LOG.info("Updating GroupMappingUser Object to INACTIVE {}", id);
+    public boolean deactivateGroupMappingUser(Integer userId, Integer groupId, User user){
+        LOG.info("Updating GroupMappingUser Object to INACTIVE user={}, group={}", userId, groupId);
         String query = GroupSql.UPDATE_GROUP_MAPPING_USER_INACTIVE;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.IS_ACTIVE, false);
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, user.getId());
-        params.addValue(CommonSql.ID, id);
+        params.addValue(CommonSql.USER_ID, userId);
+        params.addValue(CommonSql.GROUP_ID, groupId);
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 

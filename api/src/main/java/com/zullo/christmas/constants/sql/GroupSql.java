@@ -102,8 +102,9 @@ public class GroupSql {
                 dt_last_modified=timezone('utc', now()),
                 user_id_last_modified=:%s
             WHERE
-                id=:%s
-            """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
+                list_id=:%s AND
+                group_id=:%s
+            """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.LIST_ID, CommonSql.GROUP_ID);
 
     public static final String UPDATE_GROUP_MAPPING_USER_INACTIVE = String.format("""
             UPDATE group_mapping_user SET
@@ -111,8 +112,9 @@ public class GroupSql {
                 dt_last_modified=timezone('utc', now()),
                 user_id_last_modified=:%s
             WHERE
-                id=:%s
-            """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
+                user_id=:%s AND
+                group_id=:%s
+            """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.USER_ID, CommonSql.GROUP_ID);
 
     public static final String UPDATE_GROUP_INACTIVE = String.format("""
             UPDATE "group" SET

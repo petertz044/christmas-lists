@@ -142,7 +142,7 @@ public class GroupController {
 
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
-
+/*
     @PostMapping("/v1/list/{listId}/group/{mappingId}")
     public ResponseEntity<String> updateGroupMappingList(@RequestBody GroupMappingList request,
             @PathVariable Integer mappingId) {
@@ -155,12 +155,13 @@ public class GroupController {
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
-
-    @DeleteMapping("/v1/list/{listId}/group/{mappingId}")
+*/
+    @DeleteMapping("/v1/list/{listId}/group/{groupId}")
     public ResponseEntity<String> deleteGroupMappingList(@RequestHeader(name = "Authorization") String jwt,
-            @PathVariable Integer mappingId) {
+            @PathVariable Integer listId,
+            @PathVariable Integer groupId) {
         User user = jwtService.extractUserFromJwt(jwt);
-        groupService.deactivateGroupMappingList(mappingId, user);
+        groupService.deactivateGroupMappingList(listId, groupId, user);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
@@ -184,17 +185,17 @@ public class GroupController {
         LOG.debug("Initiating createList request={}", request);
         User user = jwtService.extractUserFromJwt(jwt);
         request.setUserIdLastModified(user.getId());
-        
+
         Integer id = groupService.createGroupMappingUser(request);
 
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
-
+/*
     @PostMapping("/v1/user/{userId}/group/{mappingId}")
     public ResponseEntity<String> updateGroupMappingUser(@RequestHeader(name = "Authorization") String jwt, 
             @RequestBody GroupMappingUser request,
             @PathVariable Integer userId,
-            @PathVariable Integer mappingId) {
+            @PathVariable Integer mappingId) {        
         LOG.debug("Initiating updateList id={} request={}", mappingId, request);
         User user = jwtService.extractUserFromJwt(jwt);
         request.setUserIdLastModified(user.getId());
@@ -202,14 +203,15 @@ public class GroupController {
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
-
-    @DeleteMapping("/v1/user/{userId}/group/{mappingId}")
+*/
+    @DeleteMapping("/v1/user/{userId}/group/{groupId}")
     public ResponseEntity<String> deleteGroupMappingUser(@RequestHeader(name = "Authorization") String jwt,
-            @PathVariable Integer mappingId) {
-        LOG.debug("Initiating deleteGroupMappingUser id={}", mappingId);
+            @PathVariable Integer userId,
+            @PathVariable Integer groupId) {
+        LOG.debug("Initiating deleteGroupMappingUser id={}", groupId);
         User user = jwtService.extractUserFromJwt(jwt);
 
-        groupService.deactivateGroupMappingUser(mappingId, user);
+        groupService.deactivateGroupMappingUser(userId, groupId, user);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }

@@ -63,9 +63,9 @@ public class GroupService {
         return groupRepository.updateGroupMappingList(request);
     }
 
-    public boolean deactivateGroupMappingList(Integer id, User user) {
+    public boolean deactivateGroupMappingList(Integer listId, Integer groupId, User user) {
         // TODO: Validate user is admin or member of group
-        return groupRepository.deactivateGroupMappingList(id, user);
+        return groupRepository.deactivateGroupMappingList(listId, groupId, user);
     }
 
     public List<Group> getAllGroupsForList(Integer id) {
@@ -85,9 +85,9 @@ public class GroupService {
         return groupRepository.updateGroupMappingUser(request);
     }
 
-    public boolean deactivateGroupMappingUser(Integer id, User user) {
+    public boolean deactivateGroupMappingUser(Integer userId, Integer groupId, User user) {
         // TODO: Validate user is admin or member of group
-        return groupRepository.deactivateGroupMappingUser(id, user);
+        return groupRepository.deactivateGroupMappingUser(userId, groupId, user);
     }
 
     public List<Group> getAllGroupsForUser(Integer id) {
