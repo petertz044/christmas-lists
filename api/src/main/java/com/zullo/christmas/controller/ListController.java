@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.zullo.christmas.model.api.CreateListRequest;
 import com.zullo.christmas.model.database.ListEntity;
 import com.zullo.christmas.model.database.ListEntry;
 import com.zullo.christmas.model.database.User;
@@ -65,12 +65,15 @@ public class ListController {
     }
 
     @PostMapping("/v1/list")
-    public ResponseEntity<String> createList(@RequestBody ListEntity request) {
+    public ResponseEntity<Integer> createList(@RequestHeader(name = "Authorization") String jwt, @RequestBody CreateListRequest request) {
         LOG.debug("Initiating createList request={}", request);
+        User user = jwtService.extractUserFromJwt(jwt);
 
-        listService.createList(request);
+        request.getList().setUserIdOwner(user.getId());
+        request.getList().setUserIdLastModified(user.getId());
+        Integer listId = listService.createList(request);
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(listId, HttpStatus.OK);
     }
 
     @PostMapping("/v1/list/{listId}")
@@ -106,15 +109,15 @@ public class ListController {
     }
 
     @PostMapping("/v1/list/{listId}/entry")
-    public ResponseEntity<String> createListEntry(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntry request) {
+    public ResponseEntity<Integer> createListEntry(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntry request) {
         LOG.debug("Initiating createList request={}", request);
         User user = jwtService.extractUserFromJwt(jwt);
         request.setUserIdOwner(user.getId());
 
         //TODO: Validate user is in group or admin
-        listService.createListEntry(request);
+        Integer id = listService.createListEntry(request);
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
     @PostMapping("/v1/list/{listId}/entry/{entryId}")

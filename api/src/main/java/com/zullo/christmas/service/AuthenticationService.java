@@ -12,6 +12,9 @@ import com.zullo.christmas.model.api.LoginResponse;
 import com.zullo.christmas.model.api.RegisterRequest;
 import com.zullo.christmas.model.api.RegisterResponse;
 import com.zullo.christmas.model.api.TestRequest;
+import com.zullo.christmas.model.database.Group;
+import com.zullo.christmas.model.database.ListEntity;
+import com.zullo.christmas.model.database.ListEntry;
 import com.zullo.christmas.model.database.User;
 import com.zullo.christmas.repository.UserRepository;
 
@@ -20,14 +23,17 @@ public class AuthenticationService {
     Logger LOG = LoggerFactory.getLogger(AuthenticationService.class);
 
     UserRepository userRepository;
+    GroupService groupService;
     JwtService jwtService;
     BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthenticationService(UserRepository userRepository,
-            JwtService jwtService) {
+            JwtService jwtService,
+            GroupService groupService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.groupService = groupService;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -77,5 +83,18 @@ public class AuthenticationService {
 
         return "Test";
     }
+/* 
+    public boolean canUserAccessList(User user, ListEntity list) {
+        return isOwnerOrAdmin(user, list.getUserIdOwner()) || canUserAccessGroup(user, group);
+    }
+
+    public  boolean canUserAccessGroup(User user, Group group, ){
+        return isOwnerOrAdmin(user, group.getUserIdOwner()) || 
+    }
+
+    public boolean canUserAccessListEntry(User user, ListEntry listEntry) {
+
+    }
+*/
 
 }

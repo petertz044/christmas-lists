@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.zullo.christmas.constants.sql.CommonSql;
@@ -31,7 +33,7 @@ public class ListRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    public boolean createListEntity(ListEntity listEntity) {
+    public int createListEntity(ListEntity listEntity) {
         LOG.info("Inserting ListEntity Object {}", listEntity);
         String query = ListSql.CREATE_LIST;
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -39,7 +41,12 @@ public class ListRepository {
         params.addValue(CommonSql.DESCRIPTION, listEntity.getDescription());
         params.addValue(CommonSql.USER_ID_OWNER, listEntity.getUserIdOwner());
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, listEntity.getUserIdOwner());
-        return namedParameterJdbcTemplate.update(query, params) > 0;
+        KeyHolder id = new GeneratedKeyHolder();
+        int inserted = namedParameterJdbcTemplate.update(query, params, id, new String[]{"id"});
+        if (inserted == 1){
+            return id.getKey().intValue();
+        }
+        return -1;
     }
 
     public boolean updateListEntity(ListEntity listEntity) {
@@ -134,7 +141,7 @@ public class ListRepository {
         return listIdToListEntry;
     }
 
-    public boolean createListEntry(ListEntry entry) {
+    public int createListEntry(ListEntry entry) {
         LOG.info("Inserting ListEntry Object {}", entry);
         String query = ListSql.CREATE_LIST_ENTRY;
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -146,7 +153,12 @@ public class ListRepository {
         params.addValue(CommonSql.USER_ID_OWNER, entry.getUserIdOwner());
         params.addValue(CommonSql.IS_PURCHASED, entry.getIsPurchased());
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, entry.getUserIdOwner());
-        return namedParameterJdbcTemplate.update(query, params) > 0;
+        KeyHolder id = new GeneratedKeyHolder();
+        int inserted = namedParameterJdbcTemplate.update(query, params, id, new String[]{"id"});
+        if (inserted == 1){
+            return id.getKey().intValue();
+        }
+        return -1;
     }
 
     public boolean updateListEntry(ListEntry entry, User requestor) {
@@ -188,6 +200,10 @@ public class ListRepository {
             list.setTitle(rs.getString(CommonSql.TITLE));
             list.setDescription(rs.getString(CommonSql.DESCRIPTION));
             list.setUserIdOwner(rs.getInt(CommonSql.USER_ID_OWNER));
+            list.setIsActive(true);
+            list.setDtCrtd(rs.getObject(CommonSql.DT_CRTD, LocalDateTime.class));
+            list.setDtLastModified(rs.getObject(CommonSql.DT_LAST_MODIFIED, LocalDateTime.class));
+            list.setUserIdLastModified(rs.getInt(CommonSql.USER_ID_LAST_MODIFIED));
             lists.add(list);
         });
         return lists;

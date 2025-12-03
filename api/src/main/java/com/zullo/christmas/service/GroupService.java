@@ -25,34 +25,33 @@ public class GroupService {
         this.groupRepository = groupRepository;
     }
 
-    public List<Group> getGroups(User user){
-        if (user.getRole().equals(ApplicationConstants.ADMIN)){
+    public List<Group> getGroups(User user) {
+        if (user.getRole().equals(ApplicationConstants.ADMIN)) {
             return groupRepository.getAllGroups();
         } else {
-            //TODO: Return groups user is owner or member of 
+            // TODO: Return groups user is owner or member of
             return null;
         }
 
-        
     }
 
-    public Group getGroupById(Integer id){
+    public Group getGroupById(Integer id) {
         return groupRepository.getGroupById(id);
     }
 
-    public boolean createGroup(Group request){
+    public int createGroup(Group request) {
         return groupRepository.createGroup(request);
     }
 
-    public boolean updateGroup(Group request){
+    public boolean updateGroup(Group request) {
         return groupRepository.updateGroup(request);
     }
 
-    public boolean deactivateGroup(Integer id, User user){
+    public boolean deactivateGroup(Integer id, User user) {
         return groupRepository.deactivateGroup(id, user);
     }
 
-    public boolean createGroupMappingList(GroupMappingList request) {
+    public int createGroupMappingList(GroupMappingList request) {
         // TODO: Validate user is admin or member of group
         // TODO: Validate a mapping between these IDs does not already exist
         return groupRepository.createGroupMappingList(request);
@@ -74,7 +73,7 @@ public class GroupService {
         return groupRepository.getAllActiveGroupsForList(id);
     }
 
-        public boolean createGroupMappingUser(GroupMappingUser request) {
+    public int createGroupMappingUser(GroupMappingUser request) {
         // TODO: Validate user is admin or member of group
         // TODO: Validate a mapping between these IDs does not already exist
         return groupRepository.createGroupMappingUser(request);
@@ -94,6 +93,5 @@ public class GroupService {
     public List<Group> getAllGroupsForUser(Integer id) {
         return groupRepository.getAllActiveGroupsForUser(id);
     }
-
 
 }

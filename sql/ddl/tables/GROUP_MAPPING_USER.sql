@@ -15,6 +15,7 @@ COMMENT ON TABLE group_mapping_user IS 'Many to Many of User to Group';
 COMMENT ON COLUMN group_mapping_user.id IS 'PK of group_mapping_user';
 COMMENT ON COLUMN group_mapping_user.group_id IS 'FK to Group ID';
 COMMENT ON COLUMN group_mapping_user.user_id IS 'FK to User ID';
+COMMENT ON COLUMN group_mapping_user.is_active IS 'If this mapping should be considered by logic';
 COMMENT ON COLUMN group_mapping_user.dt_crtd IS 'Date entry was created';
 COMMENT ON COLUMN group_mapping_user.dt_last_modified IS 'Date entry was last modified';
 COMMENT ON COLUMN group_mapping_user.user_id_last_modified IS 'User that last modified this entry';

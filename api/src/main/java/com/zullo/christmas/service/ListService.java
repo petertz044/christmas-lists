@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zullo.christmas.exception.ChristmasException;
+import com.zullo.christmas.model.api.CreateListRequest;
+import com.zullo.christmas.model.database.GroupMappingList;
 import com.zullo.christmas.model.database.ListEntity;
 import com.zullo.christmas.model.database.ListEntry;
 import com.zullo.christmas.model.database.User;
@@ -27,11 +30,20 @@ public class ListService {
         this.listRepository = listRepository;
     }
 
-    public boolean createList(ListEntity request) {
-        LOG.trace("Entered createList");
-        listRepository.createListEntity(request);
+    public int createList(CreateListRequest request) {
+        LOG.debug("Entered createList request={}", request);
+        int listId = listRepository.createListEntity(request.getList());
+        //Need the list id
+        if (listId == -1){
+            throw new ChristmasException("An error occurred when inserting the list!");
+        }
+        GroupMappingList gml = new GroupMappingList();
+        gml.setGroupId(request.getGroupId());
+        gml.setListId(listId);
+        gml.setUserIdLastModified(request.getList().getUserIdLastModified());
+        groupRepository.createGroupMappingList(gml);
 
-        return true;
+        return listId;
     }
 
     public boolean updateList(ListEntity request) {
@@ -55,7 +67,7 @@ public class ListService {
         return listRepository.getListFromId(listId);
     }
 
-    public boolean createListEntry(ListEntry entry){
+    public int createListEntry(ListEntry entry){
         return listRepository.createListEntry(entry);
     }
 

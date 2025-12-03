@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.zullo.christmas.constants.sql.CommonSql;
@@ -69,7 +71,7 @@ public class GroupRepository {
         return group;
     }
 
-    public boolean createGroup(Group group){
+    public int createGroup(Group group){
         LOG.info("Inserting createGroup Object {}", group);
         String query = GroupSql.CREATE_GROUP;
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -77,7 +79,12 @@ public class GroupRepository {
         params.addValue(CommonSql.DESCRIPTION, group.getDescription());
         params.addValue(CommonSql.USER_ID_OWNER, group.getUserIdOwner());
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, group.getUserIdOwner());
-        return namedParameterJdbcTemplate.update(query, params) > 0;
+        KeyHolder id = new GeneratedKeyHolder();
+        int inserted = namedParameterJdbcTemplate.update(query, params, id, new String[]{"id"});
+        if (inserted == 1){
+            return id.getKey().intValue();
+        }
+        return -1;
     }
 
     public boolean updateGroup(Group group){
@@ -103,14 +110,19 @@ public class GroupRepository {
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
-    public boolean createGroupMappingList(GroupMappingList gml){
+    public int createGroupMappingList(GroupMappingList gml){
         LOG.info("Inserting GroupMappingList Object {}", gml);
         String query = GroupSql.CREATE_GROUP_MAPPING_LIST;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.GROUP_ID, gml.getGroupId());
         params.addValue(CommonSql.LIST_ID, gml.getListId());
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, gml.getUserIdLastModified());
-        return namedParameterJdbcTemplate.update(query, params) > 0;
+        KeyHolder id = new GeneratedKeyHolder();
+        int inserted = namedParameterJdbcTemplate.update(query, params, id, new String[]{"id"});
+        if (inserted == 1){
+            return id.getKey().intValue();
+        }
+        return -1;
     }
 
     public boolean updateGroupMappingList(GroupMappingList gml){
@@ -143,7 +155,14 @@ public class GroupRepository {
         List<Group> groups = new ArrayList<>();
         namedParameterJdbcTemplate.query(query, params, rs -> {
             Group group = new Group();
-            group.setId(rs.getInt(CommonSql.ID));
+            group.setId(rs.getInt(CommonSql.GROUP_ID));
+            group.setTitle(rs.getString(CommonSql.TITLE));
+            group.setDescription(rs.getString(CommonSql.DESCRIPTION));
+            group.setUserIdOwner(rs.getInt(CommonSql.USER_ID_OWNER));
+            group.setIsActive(rs.getBoolean(CommonSql.IS_ACTIVE));
+            group.setDtCrtd(rs.getObject(CommonSql.DT_CRTD, LocalDateTime.class));
+            group.setDtLastModified(rs.getObject(CommonSql.DT_LAST_MODIFIED, LocalDateTime.class));
+            group.setUserIdLastModified(rs.getInt(CommonSql.USER_ID_LAST_MODIFIED));
             groups.add(group);
         });
         return groups;
@@ -159,20 +178,32 @@ public class GroupRepository {
         namedParameterJdbcTemplate.query(query, params, rs -> {
             Group group = new Group();
             group.setId(rs.getInt(CommonSql.GROUP_ID));
+            group.setTitle(rs.getString(CommonSql.TITLE));
+            group.setDescription(rs.getString(CommonSql.DESCRIPTION));
+            group.setUserIdOwner(rs.getInt(CommonSql.USER_ID_OWNER));
+            group.setIsActive(rs.getBoolean(CommonSql.IS_ACTIVE));
+            group.setDtCrtd(rs.getObject(CommonSql.DT_CRTD, LocalDateTime.class));
+            group.setDtLastModified(rs.getObject(CommonSql.DT_LAST_MODIFIED, LocalDateTime.class));
+            group.setUserIdLastModified(rs.getInt(CommonSql.USER_ID_LAST_MODIFIED));
             groups.add(group);
         });
         return groups;
     }
 
 
-    public boolean createGroupMappingUser(GroupMappingUser gmu){
+    public int createGroupMappingUser(GroupMappingUser gmu){
         LOG.info("Inserting GroupMappingUser Object {}", gmu);
         String query = GroupSql.CREATE_GROUP_MAPPING_USER;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.GROUP_ID, gmu.getGroupId());
         params.addValue(CommonSql.USER_ID, gmu.getUserId());
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, gmu.getUserIdLastModified());
-        return namedParameterJdbcTemplate.update(query, params) > 0;
+        KeyHolder id = new GeneratedKeyHolder();
+        int inserted = namedParameterJdbcTemplate.update(query, params, id, new String[]{"id"});
+        if (inserted == 1){
+            return id.getKey().intValue();
+        }
+        return -1;
     }
 
     public boolean updateGroupMappingUser(GroupMappingUser gmu){
