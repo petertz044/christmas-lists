@@ -1,5 +1,6 @@
 package com.zullo.christmas.controller;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -85,34 +86,30 @@ public class ListController {
     }
 
     @DeleteMapping("/v1/list/{listId}")
-    public ResponseEntity<String> deleteList(@RequestBody ListEntity request, @PathVariable Integer listId) {
-        LOG.debug("Initiating createList id={} request={}", listId, request);
-        if (request.getId() == null || request.getId() == listId){
-            return new ResponseEntity<>("Request ID does not match URL ID", HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<String> deleteList(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer listId) {
+        LOG.debug("Initiating createList id={} request={}", listId);
+        User user = jwtService.extractUserFromJwt(jwt);
 
-        listService.updateList(request);
+        listService.deleteList(listId, user);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/v1/list/{listId}/entries")
-    public ResponseEntity<List<List<ListEntry>>> getListEntries(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer listId) {
+    public ResponseEntity<HashMap<Integer, List<ListEntry>>> getListEntries(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer listId) {
         User user = jwtService.extractUserFromJwt(jwt);
 
-        List<List<ListEntry>> entries = listService.getAllActiveEntriesForList(List.of(listId));
-
-        if (CollectionUtils.isEmpty(entries)) {
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
+        HashMap<Integer, List<ListEntry>> entries = listService.getAllActiveEntriesForList(List.of(listId));
 
         return new ResponseEntity<>(entries, HttpStatus.OK);
 
     }
 
     @PostMapping("/v1/list/{listId}/entry")
-    public ResponseEntity<String> createListEntry(@RequestBody ListEntry request) {
+    public ResponseEntity<String> createListEntry(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntry request) {
         LOG.debug("Initiating createList request={}", request);
+        User user = jwtService.extractUserFromJwt(jwt);
+        request.setUserIdOwner(user.getId());
 
         //TODO: Validate user is in group or admin
         listService.createListEntry(request);
@@ -121,14 +118,13 @@ public class ListController {
     }
 
     @PostMapping("/v1/list/{listId}/entry/{entryId}")
-    public ResponseEntity<String> updateListEntry(@RequestBody ListEntry request, @PathVariable Integer entryId) {
+    public ResponseEntity<String> updateListEntry(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntry request, @PathVariable Integer entryId,  @PathVariable Integer listId) {
         LOG.debug("Initiating updateList id={} request={}", entryId, request);
-        if (request.getId() == null || request.getId() == entryId){
-            return new ResponseEntity<>("Request ID does not match URL ID", HttpStatus.BAD_REQUEST);
-        }
-
+        User user = jwtService.extractUserFromJwt(jwt);
+        request.setId(entryId);
+        request.setListId(listId);
         //TODO: Validate user is in group or admin
-        listService.updateListEntry(request);
+        listService.updateListEntry(request, user);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

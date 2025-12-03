@@ -31,7 +31,8 @@ public class ListSql {
                 user_id_last_modified=:%s
             WHERE
                 id=:%s
-            """, CommonSql.TITLE, CommonSql.DESCRIPTION, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
+            """, CommonSql.TITLE, CommonSql.DESCRIPTION, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED,
+            CommonSql.ID);
 
     public static final String CREATE_LIST_ENTRY = String.format("""
             INSERT INTO "list_entry"(
@@ -78,7 +79,8 @@ public class ListSql {
                 id=:%s AND
                 list_id=:%s
             """, CommonSql.URL, CommonSql.TITLE, CommonSql.DESCRIPTION, CommonSql.PRIORITY, CommonSql.IS_PURCHASED,
-            CommonSql.USER_ID_PURCHASED, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID, CommonSql.LIST_ID);
+            CommonSql.USER_ID_PURCHASED, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID,
+            CommonSql.LIST_ID);
 
     public static final String SELECT_LIST_ENTRY_BY_LIST_IDS = String.format("""
             SELECT
@@ -97,7 +99,7 @@ public class ListSql {
             FROM
                 list_entry
             WHERE
-                list_id IN :%s AND
+                list_id IN (:%s) AND
                 is_active = true
             """, CommonSql.LIST_ID);
 
@@ -116,6 +118,22 @@ public class ListSql {
                 id=:%s
             """, CommonSql.LIST_ID);
 
+    public static final String SELECT_ACTIVE_LISTS_FOR_OWNER = String.format("""
+            SELECT
+                id,
+                title,
+                description,
+                user_id_owner,
+                dt_crtd,
+                dt_last_modified,
+                user_id_last_modified
+            FROM
+                "list"
+            WHERE
+                is_active=true AND
+                user_id_owner=:%s
+            """, CommonSql.USER_ID_OWNER);
+
     public static final String UPDATE_LIST_ENTITY_INACTIVE = String.format("""
             UPDATE "list" SET
                 is_active=:%s,
@@ -133,4 +151,5 @@ public class ListSql {
             WHERE
                 id=:%s
             """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
+
 };

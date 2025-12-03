@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zullo.christmas.constants.ApplicationConstants;
 import com.zullo.christmas.model.database.Group;
 import com.zullo.christmas.model.database.GroupMappingList;
 import com.zullo.christmas.model.database.GroupMappingUser;
@@ -24,8 +25,19 @@ public class GroupService {
         this.groupRepository = groupRepository;
     }
 
-    public List<Group> getGroups(){
-        return groupRepository.getGroups();
+    public List<Group> getGroups(User user){
+        if (user.getRole().equals(ApplicationConstants.ADMIN)){
+            return groupRepository.getAllGroups();
+        } else {
+            //TODO: Return groups user is owner or member of 
+            return null;
+        }
+
+        
+    }
+
+    public Group getGroupById(Integer id){
+        return groupRepository.getGroupById(id);
     }
 
     public boolean createGroup(Group request){
@@ -82,5 +94,6 @@ public class GroupService {
     public List<Group> getAllGroupsForUser(Integer id) {
         return groupRepository.getAllActiveGroupsForUser(id);
     }
+
 
 }

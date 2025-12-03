@@ -33,7 +33,7 @@ import com.zullo.christmas.util.CommonUtils;
 @RestController()
 @RequestMapping("/")
 public class GroupController {
-    
+
     Logger LOG = LoggerFactory.getLogger(GroupController.class);
 
     GroupService groupService;
@@ -41,47 +41,46 @@ public class GroupController {
     JwtService jwtService;
 
     @Autowired
-    public GroupController(GroupService groupService, ListService listService, JwtService jwtService){
+    public GroupController(GroupService groupService, ListService listService, JwtService jwtService) {
         this.groupService = groupService;
         this.listService = listService;
         this.jwtService = jwtService;
     }
 
     @GetMapping("/v1/groups")
-    public ResponseEntity<List<Group>> getAllGroups(@RequestHeader(name = "Authorization") String jwt){
+    public ResponseEntity<List<Group>> getAllGroups(@RequestHeader(name = "Authorization") String jwt) {
         User user = jwtService.extractUserFromJwt(jwt);
-        if (!user.getRole().equals(ApplicationConstants.ADMIN)){
-            LOG.debug("Non admin user {} cannot access all groups", user);
-            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-        }
 
-        List<Group> groups = groupService.getGroups();
+        List<Group> groups = groupService.getGroups(user);
 
         return new ResponseEntity<>(groups, HttpStatus.OK);
     }
 
     @PostMapping("/v1/group")
-    public ResponseEntity<String> createGroup(@RequestHeader(name = "Authorization") String jwt, @RequestBody Group request){
-        
+    public ResponseEntity<String> createGroup(@RequestHeader(name = "Authorization") String jwt,
+            @RequestBody Group request) {
+        User user = jwtService.extractUserFromJwt(jwt);
+        request.setUserIdOwner(user.getId());
         groupService.createGroup(request);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping("/v1/group/{groupId}")
-    public ResponseEntity<String> updateGroup(@RequestHeader(name = "Authorization") String jwt, 
-                                              @RequestBody Group request, 
-                                              @PathVariable Integer groupId){
-        User user = jwtService.extractUserFromJwt(jwt);                                 
+    public ResponseEntity<String> updateGroup(@RequestHeader(name = "Authorization") String jwt,
+            @RequestBody Group request,
+            @PathVariable Integer groupId) {
+        User user = jwtService.extractUserFromJwt(jwt);
         request.setId(groupId);
         request.setUserIdLastModified(user.getId());
-        
+
         groupService.updateGroup(request);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @DeleteMapping("/v1/group/{groupId}")
-    public ResponseEntity<String> deleteGroup(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer groupId){
+    public ResponseEntity<String> deleteGroup(@RequestHeader(name = "Authorization") String jwt,
+            @PathVariable Integer groupId) {
         User user = jwtService.extractUserFromJwt(jwt);
 
         groupService.deactivateGroup(groupId, user);
@@ -89,15 +88,16 @@ public class GroupController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping("/v1/list/{listId}/mappings")
-    public ResponseEntity<List<Group>> getGroupMappingLists(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer listId) {
+    @GetMapping("/v1/list/{listId}/groups")
+    public ResponseEntity<List<Group>> getGroupMappingLists(@RequestHeader(name = "Authorization") String jwt,
+            @PathVariable Integer listId) {
         User user = jwtService.extractUserFromJwt(jwt);
 
         ListEntity list = listService.getListById(listId);
-        if (!CommonUtils.isOwnerOrAdmin(user, list.getId())){
+        if (!CommonUtils.isOwnerOrAdmin(user, list.getId())) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        
+
         List<Group> groups = groupService.getAllGroupsForList(listId);
 
         if (CollectionUtils.isEmpty(groups)) {
@@ -108,27 +108,44 @@ public class GroupController {
 
     }
 
-    @PostMapping("/v1/list/{listId}/mapping")
+
+    @GetMapping("/v1/group/{groupId}/lists")
+    public ResponseEntity<List<ListEntity>> getListsForGroup(@RequestHeader(name = "Authorization") String jwt,
+            @PathVariable Integer groupId) {
+        User user = jwtService.extractUserFromJwt(jwt);
+
+        List<ListEntity> lists = listService.getAllActiveListsForGroupIds(List.of(groupId));
+
+        //Needed?
+        if (CollectionUtils.isEmpty(lists)){
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(lists, HttpStatus.OK);
+    }
+
+    @PostMapping("/v1/list/{listId}/group")
     public ResponseEntity<String> createGroupMappingList(@RequestHeader(name = "Authorization") String jwt,
-                                                         @RequestBody GroupMappingList request,
-                                                         @PathVariable Integer listId) {
+            @RequestBody GroupMappingList request,
+            @PathVariable Integer listId) {
         LOG.debug("Initiating createList request={}", request);
         User user = jwtService.extractUserFromJwt(jwt);
 
         ListEntity list = listService.getListById(listId);
-        if (!CommonUtils.isOwnerOrAdmin(user, list.getId())){
+        if (!CommonUtils.isOwnerOrAdmin(user, list.getId())) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        
+
         groupService.createGroupMappingList(request);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PostMapping("/v1/list/{listId}/mapping/{mappingId}")
-    public ResponseEntity<String> updateGroupMappingList(@RequestBody GroupMappingList request, @PathVariable Integer mappingId) {
+    @PostMapping("/v1/list/{listId}/group/{mappingId}")
+    public ResponseEntity<String> updateGroupMappingList(@RequestBody GroupMappingList request,
+            @PathVariable Integer mappingId) {
         LOG.debug("Initiating updateList id={} request={}", mappingId, request);
-        if (request.getId() == null || request.getId() == mappingId){
+        if (request.getId() == null || request.getId() == mappingId) {
             return new ResponseEntity<>("Request ID does not match URL ID", HttpStatus.BAD_REQUEST);
         }
 
@@ -137,17 +154,16 @@ public class GroupController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @DeleteMapping("/v1/list/{listId}/mapping/{mappingId}")
-    public ResponseEntity<String> deleteGroupMappingList(@RequestHeader(name = "Authorization") String jwt, 
-                                                         @PathVariable Integer mappingId) {
+    @DeleteMapping("/v1/list/{listId}/group/{mappingId}")
+    public ResponseEntity<String> deleteGroupMappingList(@RequestHeader(name = "Authorization") String jwt,
+            @PathVariable Integer mappingId) {
         User user = jwtService.extractUserFromJwt(jwt);
         groupService.deactivateGroupMappingList(mappingId, user);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
-
-    @GetMapping("/v1/user/{userId}/mappings")
+    @GetMapping("/v1/user/{userId}/groups")
     public ResponseEntity<List<Group>> getGroupMappingUsers(@RequestHeader(name = "Authorization") String jwt) {
         User user = jwtService.extractUserFromJwt(jwt);
 
@@ -161,7 +177,7 @@ public class GroupController {
 
     }
 
-    @PostMapping("/v1/user/{userId}/mapping")
+    @PostMapping("/v1/user/{userId}/group")
     public ResponseEntity<String> createGroupMappingUser(@RequestBody GroupMappingUser request) {
         LOG.debug("Initiating createList request={}", request);
 
@@ -170,10 +186,11 @@ public class GroupController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PostMapping("/v1/user/{userId}/mapping/{mappingId}")
-    public ResponseEntity<String> updateGroupMappingUser(@RequestBody GroupMappingUser request, @PathVariable Integer mappingId) {
+    @PostMapping("/v1/user/{userId}/group/{mappingId}")
+    public ResponseEntity<String> updateGroupMappingUser(@RequestBody GroupMappingUser request,
+            @PathVariable Integer mappingId) {
         LOG.debug("Initiating updateList id={} request={}", mappingId, request);
-        if (request.getId() == null || request.getId() == mappingId){
+        if (request.getId() == null || request.getId() == mappingId) {
             return new ResponseEntity<>("Request ID does not match URL ID", HttpStatus.BAD_REQUEST);
         }
 
@@ -182,16 +199,15 @@ public class GroupController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @DeleteMapping("/v1/user/{userId}/mapping/{mappingId}")
-    public ResponseEntity<String> deleteGroupMappingUser(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer mappingId) {
+    @DeleteMapping("/v1/user/{userId}/group/{mappingId}")
+    public ResponseEntity<String> deleteGroupMappingUser(@RequestHeader(name = "Authorization") String jwt,
+            @PathVariable Integer mappingId) {
         LOG.debug("Initiating deleteGroupMappingUser id={}", mappingId);
         User user = jwtService.extractUserFromJwt(jwt);
-        
+
         groupService.deactivateGroupMappingUser(mappingId, user);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
-
-
 
 }

@@ -113,7 +113,7 @@ public class GroupSql {
             WHERE
                 id=:%s
             """, CommonSql.IS_ACTIVE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
-            
+
     public static final String UPDATE_GROUP_INACTIVE = String.format("""
             UPDATE "group" SET
                 is_active=:%s,
@@ -153,18 +153,6 @@ public class GroupSql {
                 l.is_active=true
             """, CommonSql.GROUP_ID);
 
-    public static final String SELECT_ACTIVE_LISTS_FOR_OWNER = String.format("""
-            SELECT
-                list_id,
-                title,
-                description
-            FROM
-                "list"
-            WHERE
-                is_active=true AND
-                user_id_owner=:%s
-            """, CommonSql.USER_ID_OWNER);
-
     public static final String SELECT_ACTIVE_GROUPS_FOR_LIST_ID = String.format("""
             SELECT
                 group_id
@@ -174,7 +162,7 @@ public class GroupSql {
                 list_id = :%s
             """, CommonSql.LIST_ID);
     public static final String SELECT_ALL_GROUPS = """
-            SELECT 
+            SELECT
                 id,
                 title,
                 description,
@@ -183,9 +171,25 @@ public class GroupSql {
                 dt_crtd,
                 dt_last_modified,
                 user_id_last_modified
-            FROM 
+            FROM
                 "group"
             WHERE
                 is_active=true
             """;
+    public static final String SELECT_GROUP_BY_ID = String.format("""
+            SELECT
+                id,
+                title,
+                description,
+                user_id_owner,
+                is_active,
+                dt_crtd,
+                dt_last_modified,
+                user_id_last_modified
+            FROM
+                "group"
+            WHERE
+                id=:%s
+                is_active=true
+            """, CommonSql.ID);
 }

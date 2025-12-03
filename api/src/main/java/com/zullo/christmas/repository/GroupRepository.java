@@ -30,7 +30,7 @@ public class GroupRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    public List<Group> getGroups(){
+    public List<Group> getAllGroups(){
         LOG.info("Entering getGroups");
         String query = GroupSql.SELECT_ALL_GROUPS;
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -49,6 +49,24 @@ public class GroupRepository {
         });
         return groups;
 
+    }
+
+    public Group getGroupById(Integer id){
+        LOG.debug("Entering getGroupById id={}", id);
+        String query = GroupSql.SELECT_GROUP_BY_ID;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        Group group = new Group();
+        namedParameterJdbcTemplate.query(query, params, rs -> {
+            group.setId(rs.getInt(CommonSql.ID));
+            group.setTitle(rs.getString(CommonSql.TITLE));
+            group.setDescription(rs.getString(CommonSql.DESCRIPTION));
+            group.setUserIdOwner(rs.getInt(CommonSql.USER_ID_OWNER));
+            group.setIsActive(rs.getBoolean(CommonSql.IS_ACTIVE));
+            group.setDtCrtd(rs.getObject(CommonSql.DT_CRTD, LocalDateTime.class));
+            group.setDtLastModified(rs.getObject(CommonSql.DT_LAST_MODIFIED, LocalDateTime.class));
+            group.setUserIdLastModified(rs.getInt(CommonSql.USER_ID_LAST_MODIFIED));
+        });
+        return group;
     }
 
     public boolean createGroup(Group group){
@@ -131,22 +149,6 @@ public class GroupRepository {
         return groups;
     }
 
-    public List<ListEntity> getAllActiveListsForGroup(List<Integer> ids) {
-        LOG.info("Getting all active lists for groups {}", ids);
-        String query = GroupSql.SELECT_ACTIVE_LISTS_FOR_GROUP_IDS;
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue(CommonSql.GROUP_ID, ids);
-        List<ListEntity> lists = new ArrayList<>();
-        namedParameterJdbcTemplate.query(query, params, rs -> {
-            ListEntity list = new ListEntity();
-            list.setId(rs.getInt(CommonSql.LIST_ID));
-            list.setTitle(rs.getString(CommonSql.TITLE));
-            list.setDescription(rs.getString(CommonSql.DESCRIPTION));
-            list.setUserIdOwner(rs.getInt(CommonSql.USER_ID_OWNER));
-            lists.add(list);
-        });
-        return lists;
-    }
 
     public List<Group> getAllActiveGroupsForList(Integer id){
         LOG.info("Entering getAllActiveGroupsForList id={}", id);

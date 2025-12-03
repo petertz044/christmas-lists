@@ -55,7 +55,7 @@ public class ListRepository {
 
     public boolean deactivateListEntity(Integer id, User user) {
         LOG.info("Updating GroupMappingUser Object to INACTIVE {}", id);
-        String query = ListSql.UPDATE_LIST_ENTRY_INACTIVE;
+        String query = ListSql.UPDATE_LIST_ENTITY_INACTIVE;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.IS_ACTIVE, false);
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, user.getId());
@@ -83,26 +83,30 @@ public class ListRepository {
 
     public List<ListEntity> getAllActiveListsForOwner(Integer id) {
         LOG.info("Getting all active lists for owner {}", id);
-        String query = GroupSql.SELECT_ACTIVE_LISTS_FOR_OWNER;
+        String query = ListSql.SELECT_ACTIVE_LISTS_FOR_OWNER;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.USER_ID_OWNER, id);
         List<ListEntity> lists = new ArrayList<>();
         namedParameterJdbcTemplate.query(query, params, rs -> {
             ListEntity list = new ListEntity();
-            list.setId(rs.getInt(CommonSql.LIST_ID));
+            list.setId(rs.getInt(CommonSql.ID));
             list.setTitle(rs.getString(CommonSql.TITLE));
             list.setDescription(rs.getString(CommonSql.DESCRIPTION));
+            list.setUserIdOwner(rs.getInt(CommonSql.USER_ID_OWNER));
+            list.setIsActive(true);
+            list.setDtCrtd(rs.getObject(CommonSql.DT_CRTD, LocalDateTime.class));
+            list.setDtLastModified(rs.getObject(CommonSql.DT_LAST_MODIFIED, LocalDateTime.class));
+            list.setUserIdLastModified(rs.getInt(CommonSql.USER_ID_LAST_MODIFIED));
             lists.add(list);
         });
         return lists;
     }
 
-    public List<List<ListEntry>> getAllActiveEntriesForList(List<Integer> ids) {
+    public HashMap<Integer, List<ListEntry>> getAllActiveEntriesForList(List<Integer> ids) {
         LOG.info("Entering getAllActiveEntriesForList ids={}", ids);
         String query = ListSql.SELECT_LIST_ENTRY_BY_LIST_IDS;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.LIST_ID, ids);
-        List<List<ListEntry>> listEntries = new ArrayList<>();
         HashMap<Integer, List<ListEntry>> listIdToListEntry = new HashMap<>();
         namedParameterJdbcTemplate.query(query, params, rs -> {
             ListEntry entry = new ListEntry();
@@ -111,6 +115,7 @@ public class ListRepository {
             entry.setTitle(rs.getString(CommonSql.TITLE));
             entry.setDescription(rs.getString(CommonSql.DESCRIPTION));
             entry.setPriority(rs.getString(CommonSql.PRIORITY).charAt(0));
+            entry.setIsActive(true);
             entry.setUserIdOwner(rs.getInt(CommonSql.USER_ID_OWNER));
             entry.setListId(rs.getInt(CommonSql.LIST_ID));
             entry.setIsPurchased(rs.getBoolean(CommonSql.IS_PURCHASED));
@@ -126,8 +131,7 @@ public class ListRepository {
                 listIdToListEntry.put(entry.getListId(), list);
             }
         });
-        listIdToListEntry.values().stream().forEach(list -> listEntries.add(list));
-        return listEntries;
+        return listIdToListEntry;
     }
 
     public boolean createListEntry(ListEntry entry) {
@@ -145,7 +149,7 @@ public class ListRepository {
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
-    public boolean updateListEntry(ListEntry entry) {
+    public boolean updateListEntry(ListEntry entry, User requestor) {
         LOG.info("Updating GroupMappingList Object {}", entry);
         String query = ListSql.UPDATE_LIST_ENTRY;
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -156,7 +160,9 @@ public class ListRepository {
         params.addValue(CommonSql.IS_PURCHASED, entry.getIsPurchased());
         params.addValue(CommonSql.USER_ID_PURCHASED, entry.getUserIdPurchased());
         params.addValue(CommonSql.IS_ACTIVE, entry.getIsActive());
-        params.addValue(CommonSql.USER_ID_LAST_MODIFIED, entry.getUserIdOwner());
+        params.addValue(CommonSql.USER_ID_LAST_MODIFIED, requestor.getId());
+        params.addValue(CommonSql.ID, entry.getId());
+        params.addValue(CommonSql.LIST_ID, entry.getListId());
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
@@ -168,5 +174,22 @@ public class ListRepository {
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, user.getId());
         params.addValue(CommonSql.ID, id);
         return namedParameterJdbcTemplate.update(query, params) > 0;
+    }
+
+    public List<ListEntity> getAllActiveListsForGroup(List<Integer> ids) {
+        LOG.info("Getting all active lists for groups {}", ids);
+        String query = GroupSql.SELECT_ACTIVE_LISTS_FOR_GROUP_IDS;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue(CommonSql.GROUP_ID, ids);
+        List<ListEntity> lists = new ArrayList<>();
+        namedParameterJdbcTemplate.query(query, params, rs -> {
+            ListEntity list = new ListEntity();
+            list.setId(rs.getInt(CommonSql.LIST_ID));
+            list.setTitle(rs.getString(CommonSql.TITLE));
+            list.setDescription(rs.getString(CommonSql.DESCRIPTION));
+            list.setUserIdOwner(rs.getInt(CommonSql.USER_ID_OWNER));
+            lists.add(list);
+        });
+        return lists;
     }
 }

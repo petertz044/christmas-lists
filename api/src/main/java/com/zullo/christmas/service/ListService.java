@@ -1,5 +1,6 @@
 package com.zullo.christmas.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -58,17 +59,20 @@ public class ListService {
         return listRepository.createListEntry(entry);
     }
 
-    public boolean updateListEntry(ListEntry entry){
-        return listRepository.updateListEntry(entry);
+    public boolean updateListEntry(ListEntry entry, User requestor){
+        return listRepository.updateListEntry(entry, requestor);
     }
 
     public boolean deactivateListEntry(Integer id, User user){
         return listRepository.deactivateListEntry(id, user);
     }
 
-    public List<List<ListEntry>> getAllActiveEntriesForList(List<Integer> ids){
+    public HashMap<Integer, List<ListEntry>> getAllActiveEntriesForList(List<Integer> ids){
         return listRepository.getAllActiveEntriesForList(ids);
     }
 
+    public List<ListEntity> getAllActiveListsForGroupIds(List<Integer> ids){
+        return listRepository.getAllActiveListsForGroup(ids);
+    }
 
 }
