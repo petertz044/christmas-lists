@@ -1,4 +1,4 @@
-package com.zullo.christmas.model.Api;
+package com.zullo.christmas.model.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

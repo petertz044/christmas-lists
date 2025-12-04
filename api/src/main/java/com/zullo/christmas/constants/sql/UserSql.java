@@ -1,12 +1,6 @@
 package com.zullo.christmas.constants.sql;
 
 public class UserSql {
-    public static final String ID = "id";
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String ROLE = "role";
-    public static final String USER_ID_LAST_MODIFIED = "user_id_last_modified";
-
     public static final String SELECT_USER_BY_USERNAME = String.format("""
             SELECT 
                 U.id, 
@@ -15,7 +9,7 @@ public class UserSql {
                 U.role, 
                 U.user_id_last_modified 
             FROM "user" U WHERE U.username = :%s
-            """, USERNAME);
+            """, CommonSql.USERNAME);
     public static final String SELECT_USER_BY_ID = String.format("""
             SELECT 
                 U.id, 
@@ -24,7 +18,7 @@ public class UserSql {
                 U.role, 
                 U.user_id_last_modified 
             FROM "user" U WHERE U.id = :%s
-            """, ID);
+            """, CommonSql.ID);
 
     public static final String INSERT_USER = String.format("""
                 INSERT INTO "user"(
@@ -41,7 +35,7 @@ public class UserSql {
                     timezone('utc', now()),
                     timezone('utc', now())
                 )
-                """, USERNAME, PASSWORD, ROLE);
+                """, CommonSql.USERNAME, CommonSql.PASSWORD, CommonSql.ROLE);
     public static final String UPDATE_USER_AUDIT = String.format("""
             UPDATE
                 "user" u
@@ -49,7 +43,7 @@ public class UserSql {
                 dt_last_login = timezone('utc', now())
             WHERE
                 u.username =:%s;
-            """, USERNAME);
+            """, CommonSql.USERNAME);
 
     public static final String UPDATE_USER_ROLE = String.format("""
             UPDATE
@@ -59,6 +53,6 @@ public class UserSql {
                 user_id_last_modified = :%s
                 dt_last_modified = timezone('utc', now())
             WHERE
-                u.username =:%s;
-            """, ROLE, USER_ID_LAST_MODIFIED, USERNAME);
+                u.id =:%s;
+            """, CommonSql.ROLE, CommonSql.USER_ID_LAST_MODIFIED, CommonSql.ID);
 }

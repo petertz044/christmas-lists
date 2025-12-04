@@ -1,9 +1,4 @@
-<header class="site-wide-header">
-    <h1>
-        Christmas Lists
-        <mat-icon class="header-icon">checklist_rtl</mat-icon>
-    </h1>
-</header>
+<br>
 <br>
 <div class="register-wrapper" fxLayout="row" fxLayoutAlign="center center">
     <mat-card class="register-card">
@@ -18,84 +13,93 @@
                 class="image-illustration"
             />
         </mat-card-content>
-        <div class="register-form-wrapper">
-            <form class="register-form" [formGroup]="registerForm">
-                <mat-card-content>
-                    <mat-form-field appearance="outline">
-                        <mat-label>First Name</mat-label>
-                            <input matInput formControlName="firstName" required />
-                        <mat-error *ngIf="firstName.invalid && firstName.touched">First name is required</mat-error>
-                    </mat-form-field>
+        <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <mat-card-content>
+                <mat-form-field appearance="outline">
+                    <mat-label>First Name</mat-label>
+                        <input matInput formControlName="firstName" required />
+                    <mat-error *ngIf="firstName.invalid && firstName.touched">First name is required</mat-error>
+                </mat-form-field>
 
-                    <mat-form-field appearance="outline">
-                        <mat-label>Last Name</mat-label>
-                            <input matInput formControlName="lastName" required />
-                        <mat-error *ngIf="lastName.invalid && lastName.touched">Last Name is required</mat-error>
-                    </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                        <input matInput formControlName="lastName" required />
+                    <mat-error *ngIf="lastName.invalid && lastName.touched">Last Name is required</mat-error>
+                </mat-form-field>
 
-                    <mat-form-field appearance="outline">
-                        <mat-label>Email</mat-label>
-                            <input matInput type="email" formControlName="email" required />
-                        <mat-error *ngIf="email.invalid && email.touched">Please enter a valid email</mat-error>
-                    </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Username</mat-label>
+                        <input matInput type="username" formControlName="username" required />
+                    <mat-error *ngIf="username.invalid && username.touched">Please enter a valid username</mat-error>
+                </mat-form-field>
 
-                    <mat-form-field appearance="outline">
-                        <mat-label>Password</mat-label>
-                            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
-                        <button mat-icon-button matSuffix *ngIf="hidePassword !== undefined && password?.value" (click)="hidePassword = !hidePassword">
+                <mat-form-field appearance="outline">
+                    <mat-label>Password</mat-label>
+                        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
+                    @if (hidePassword !== undefined && password.value) {
+                        <button
+                            mat-icon-button
+                            matSuffix
+                            type="button"
+                            (click)="hidePassword = !hidePassword">
                             <mat-icon class="header-icon">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                         </button>
-                        @if ( (password?.invalid && password?.touched) || password?.dirty ) {
+                    }
+                    @if ( (password.invalid && password.touched) || password.dirty ) {
+                        <div>
+                            @if (password.errors?.['required']) {
+                                <mat-error><small>Password is required</small></mat-error>
+                            }@if (password.errors?.['minlength']) {
+                                <mat-error><small>Password must be at least 8 characters</small></mat-error>
+                            }@if (password.errors?.['hasUpperCase']) {
+                                <mat-error><small>Password must contain at least one upper case</small></mat-error>
+                            }@if (password.errors?.['hasLowerCase']) {
+                                <mat-error><small>Password must contain at least one lower case</small></mat-error>
+                            }@if (password.errors?.['hasSpecial']) {
+                                <mat-error><small>Password must contain at least one special character</small></mat-error>
+                            }
+                        </div>
+                    }
+                </mat-form-field>
+                @if (password.dirty) {
+                    <mat-form-field appearance="outline">
+                        <mat-label>Re-enter Password</mat-label>
+                            <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword" required />
+                        @if (hideConfirmPassword !== undefined && confirmPassword?.value) {
+                            <button
+                                mat-icon-button
+                                matSuffix
+                                type="button"
+                                (click)="hideConfirmPassword = !hideConfirmPassword">
+                                <mat-icon class="header-icon">{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                            </button>
+                        }
+                        @if (confirmPassword?.invalid && confirmPassword?.dirty) {
                             <div>
-                                @if (password?.errors?.['required']) {
-                                    <mat-error><small>Password is required</small></mat-error>
-                                }@if (password?.errors?.['minlength']) {
-                                    <mat-error><small>Password must be at least 8 characters</small></mat-error>
-                                }@if (password?.errors?.['hasUpperCase']) {
-                                    <mat-error><small>Password must contain at least one upper case</small></mat-error>
-                                }@if (password?.errors?.['hasLowerCase']) {
-                                    <mat-error><small>Password must contain at least one lower case</small></mat-error>
-                                }@if (password?.errors?.['hasSpecial']) {
-                                    <mat-error><small>Password must contain at least one special character</small></mat-error>
+                                @if (confirmPassword?.errors?.['mismatch']) {
+                                    <mat-error><small>Passwords must match</small></mat-error>
                                 }
                             </div>
                         }
                     </mat-form-field>
-                    @if (password?.dirty) {
-                        <mat-form-field appearance="outline">
-                            <mat-label>Re-enter Password</mat-label>
-                                <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword" required />
-                            <button mat-icon-button matSuffix *ngIf="hideConfirmPassword !== undefined && confirmPassword?.value" (click)="hideConfirmPassword = !hideConfirmPassword">
-                                <mat-icon class="header-icon">{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                            </button>
-                            @if (confirmPassword?.invalid && confirmPassword?.dirty) {
-                                <div>
-                                    @if (confirmPassword?.errors?.['mismatch']) {
-                                        <mat-error><small>Passwords must match</small></mat-error>
-                                    }
-                                </div>
-                            }
-                        </mat-form-field>
-                    }
-                </mat-card-content>
-                
-                @if(registerForm) {
-                    <button 
-                        mat-raised-button
-                        color="accent"
-                        class="btn-block"
-                        formcontrol="control"
-                        [disabled]="registerForm.invalid || isLoading() || registerForm.pending"
-                        (click)="onSubmit()">
-                        @if (!isLoading()) {
-                            Register
-                        }
-                        @if (isLoading()) {
-                            <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
-                        }
-                    </button>
                 }
-            </form>
-        </div>
+            </mat-card-content>
+
+            @if(registerForm) {
+                <button
+                    mat-raised-button
+                    color="accent"
+                    class="btn-block"
+                    type="submit"
+                    [disabled]="registerForm.invalid || isLoading() || registerForm.pending">
+                    @if (!isLoading()) {
+                        Register
+                    }
+                    @if (isLoading()) {
+                        <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
+                    }
+                </button>
+            }
+        </form>
     </mat-card>
 </div>

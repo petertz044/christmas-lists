@@ -1,13 +1,9 @@
 import { Injectable, signal } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 export interface User {
-  id?: number;
-  firstName: string;
-  lastName: string;
-  email: string;
+  username: string;
   password: string;
 }
 @Injectable({
@@ -15,32 +11,19 @@ export interface User {
 })
 export class RegisterService {
   
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient) { }
 
   private userRegistered = signal(false)
-  private baseUrl = "jdbc:postgresql://database.nicholaszullo.com:5432/christmas"
+  private baseUrl = "https://christmas.nicholaszullo.com"
   
-  registerUser( User: User ) {
+  registerUser( user: User ) {
     
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
+    return this.http.post<any>(`${this.baseUrl}/auth/register`, user).pipe(
+      catchError(err => {
+        console.error('Failed to add user:', err);
+        this.userRegistered.set(false);
+        return throwError(() => err);
       })
-    }
-    
-    /*
-    return this.http.post<User>(`${this.baseUrl}/register`, User, httpOptions)
-      .pipe(
-        catchError(err => {
-          console.error('Failed to add user:', err);
-          this.userRegistered.set(false);
-          return of(null);
-        })
-      ).subscribe(res => {
-        if (res) {
-          this.userRegistered.set(true);
-        }
-      });
-      */
+    );
   }
 }
