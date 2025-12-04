@@ -103,6 +103,26 @@ public class ListSql {
                 is_active = true
             """, CommonSql.LIST_ID);
 
+    public static final String SELECT_LIST_ENTRY_BY_ENTRY_ID = String.format("""
+            SELECT
+                url,
+                title,
+                description,
+                priority,
+                list_id,
+                user_id_owner,
+                is_purchased,
+                user_id_purchased,
+                dt_crtd,
+                dt_last_modified,
+                user_id_last_modified
+            FROM
+                list_entry
+            WHERE
+                id IN (:%s) AND
+                is_active = true
+            """, CommonSql.ID);
+
     public static final String SELECT_LIST_BY_ID = String.format("""
             SELECT
                 title,

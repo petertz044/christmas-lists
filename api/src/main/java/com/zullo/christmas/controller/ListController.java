@@ -31,10 +31,6 @@ import com.zullo.christmas.service.ListService;
 @RequestMapping("/")
 public class ListController {
     /**
-     * TODO: Add permission checks 
-     *          Only owner can delete
-     *          Only admin can delete 
-     * TODO: Confirm a logged in user cant access other resources by changing url
      * TODO: Update all loggers
      */
 
@@ -56,10 +52,6 @@ public class ListController {
 
         List<ListEntity> lists = listService.getAllListsForUser(user);
 
-        if (CollectionUtils.isEmpty(lists)) {
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-
         return new ResponseEntity<>(lists, HttpStatus.OK);
 
     }
@@ -71,8 +63,10 @@ public class ListController {
 
         request.getList().setUserIdOwner(user.getId());
         request.getList().setUserIdLastModified(user.getId());
-        Integer listId = listService.createList(request);
-
+        Integer listId = listService.createList(request, user);
+        if (listId == -1) {
+            return new ResponseEntity<>(-1, HttpStatus.FORBIDDEN);
+        }
         return new ResponseEntity<>(listId, HttpStatus.OK);
     }
 
@@ -83,7 +77,16 @@ public class ListController {
         request.setUserIdLastModified(user.getId());
         request.setId(listId);
 
-        listService.updateList(request);
+        int result = listService.updateList(request, user);
+
+        if (result == -1) {
+            return new ResponseEntity<>("User is not authorized to update the list", HttpStatus.FORBIDDEN);
+        } else if (result == 0) {
+            return new ResponseEntity<>("An error occurred when updating the list", HttpStatus.INTERNAL_SERVER_ERROR);
+        } else if (result > 1) {
+            LOG.error("------CRITICAL ERROR------ Multiple rows affected when updating list id {}: {}", listId, result);
+            return new ResponseEntity<>("An error occurred when updating the list", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
@@ -102,7 +105,7 @@ public class ListController {
     public ResponseEntity<HashMap<Integer, List<ListEntry>>> getListEntries(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer listId) {
         User user = jwtService.extractUserFromJwt(jwt);
 
-        HashMap<Integer, List<ListEntry>> entries = listService.getAllActiveEntriesForList(List.of(listId));
+        HashMap<Integer, List<ListEntry>> entries = listService.getAllActiveEntriesForList(List.of(listId), user);
 
         return new ResponseEntity<>(entries, HttpStatus.OK);
 
@@ -116,9 +119,10 @@ public class ListController {
         request.setListId(listId);
         request.setUserIdLastModified(user.getId());
 
-        //TODO: Validate user is in group or admin
-        Integer id = listService.createListEntry(request);
-
+        Integer id = listService.createListEntry(request, user);
+        if (id == -1){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
@@ -129,7 +133,7 @@ public class ListController {
         request.setId(entryId);
         request.setListId(listId);
         request.setUserIdLastModified(user.getId());
-        //TODO: Validate user is in group or admin
+        
         listService.updateListEntry(request, user);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
@@ -140,7 +144,6 @@ public class ListController {
         LOG.debug("Initiating createList id={}", entryId);
         User user = jwtService.extractUserFromJwt(jwt);
 
-        //TODO: Validate user is owner or admin
         listService.deactivateListEntry(entryId, user);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);

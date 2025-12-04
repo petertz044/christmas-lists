@@ -49,7 +49,7 @@ public class ListRepository {
         return -1;
     }
 
-    public boolean updateListEntity(ListEntity listEntity) {
+    public int updateListEntity(ListEntity listEntity) {
         LOG.info("Updating GroupMappingList Object {}", listEntity);
         String query = ListSql.UPDATE_LIST_ENTRY;
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -57,7 +57,7 @@ public class ListRepository {
         params.addValue(CommonSql.DESCRIPTION, listEntity.getDescription());
         params.addValue(CommonSql.IS_ACTIVE, listEntity.getIsActive());
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, listEntity.getUserIdOwner());
-        return namedParameterJdbcTemplate.update(query, params) > 0;
+        return namedParameterJdbcTemplate.update(query, params);
     }
 
     public boolean deactivateListEntity(Integer id, User user) {
@@ -139,6 +139,29 @@ public class ListRepository {
             }
         });
         return listIdToListEntry;
+    }
+
+    public ListEntry getListEntryById(Integer id) {
+        LOG.info("Entering getListEntryById id={}", id);
+        String query = ListSql.SELECT_LIST_ENTRY_BY_ENTRY_ID;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue(CommonSql.ID, id);
+        ListEntry entry = new ListEntry();
+        namedParameterJdbcTemplate.query(query, params, rs -> {
+            entry.setUrl(rs.getString(CommonSql.URL));
+            entry.setTitle(rs.getString(CommonSql.TITLE));
+            entry.setDescription(rs.getString(CommonSql.DESCRIPTION));
+            entry.setPriority(rs.getString(CommonSql.PRIORITY).charAt(0));
+            entry.setIsActive(true);
+            entry.setUserIdOwner(rs.getInt(CommonSql.USER_ID_OWNER));
+            entry.setListId(rs.getInt(CommonSql.LIST_ID));
+            entry.setIsPurchased(rs.getBoolean(CommonSql.IS_PURCHASED));
+            entry.setUserIdPurchased(rs.getInt(CommonSql.USER_ID_PURCHASED));
+            entry.setDtCrtd(rs.getObject(CommonSql.DT_CRTD, LocalDateTime.class));
+            entry.setDtLastModified(rs.getObject(CommonSql.DT_LAST_MODIFIED, LocalDateTime.class));
+            entry.setUserIdLastModified(rs.getInt(CommonSql.USER_ID_LAST_MODIFIED));
+        });
+        return entry;
     }
 
     public int createListEntry(ListEntry entry) {

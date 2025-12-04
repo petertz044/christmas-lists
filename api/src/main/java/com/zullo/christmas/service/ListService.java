@@ -32,10 +32,12 @@ public class ListService {
         this.authenticationService = authenticationService;
     }
 
-    public int createList(CreateListRequest request) {
+    public int createList(CreateListRequest request, User requestor) {
         LOG.debug("Entered createList request={}", request);
+        if (!authenticationService.canUserReadGroup(request.getGroupId(), requestor)){
+            return -1;
+        }
         int listId = listRepository.createListEntity(request.getList());
-        //Need the list id
         if (listId == -1){
             throw new ChristmasException("An error occurred when inserting the list!");
         }
@@ -48,16 +50,22 @@ public class ListService {
         return listId;
     }
 
-    public boolean updateList(ListEntity request) {
+    public int updateList(ListEntity request, User requestor) {
         LOG.trace("Entered updateList");
-        listRepository.updateListEntity(request);
-
-        return true;
+        if (!authenticationService.canUserDeleteList(request, requestor)){
+            LOG.warn("User {} is not authorized to update list {}", requestor, request.getId());
+            return -1;
+        }
+        return listRepository.updateListEntity(request);
     }
 
-    public boolean deleteList(Integer id, User user) {
+    public boolean deleteList(Integer listId, User user) {
         LOG.trace("Entered deleteList");
-        listRepository.deactivateListEntity(id, user);
+        if (!authenticationService.canUserDeleteList(listRepository.getListById(listId), user)){
+            LOG.warn("User {} is not authorized to delete list {}", user, listId);
+            return false;
+        }
+        listRepository.deactivateListEntity(listId, user);
         return true;
     }
 
@@ -69,24 +77,50 @@ public class ListService {
         return listRepository.getListById(listId);
     }
 
-    public int createListEntry(ListEntry entry){
+    public int createListEntry(ListEntry entry, User requestor){
+        if (!authenticationService.canUserDeleteList(listRepository.getListById(entry.getListId()), requestor)){
+            LOG.warn("User {} is not authorized to add entry to list {}", requestor, entry.getListId());
+            return -1;
+        }
         return listRepository.createListEntry(entry);
     }
 
     public boolean updateListEntry(ListEntry entry, User requestor){
-        return listRepository.updateListEntry(entry, requestor);
+        if (!authenticationService.canUserDeleteListEntry(entry, requestor) && authenticationService.canUserReadList(entry.getListId(), requestor)){
+            // Allow toggling purchase status if user can read list
+            ListEntry existingEntry = listRepository.getListEntryById(entry.getId());
+            if (existingEntry.getIsPurchased() != entry.getIsPurchased()){
+                existingEntry.setIsPurchased(entry.getIsPurchased());
+                return listRepository.updateListEntry(existingEntry, requestor);
+            }
+        } else if (authenticationService.canUserDeleteListEntry(entry, requestor)){
+            //Only owner or admin can update entry details
+            return listRepository.updateListEntry(entry, requestor);
+        }
+        return false;
     }
 
     public boolean deactivateListEntry(Integer id, User user){
+        if (!authenticationService.canUserDeleteListEntry(listRepository.getListEntryById(id), user)){
+            LOG.warn("User {} is not authorized to delete list entry {}", user, id);
+            return false;
+        }
         return listRepository.deactivateListEntry(id, user);
     }
 
-    public HashMap<Integer, List<ListEntry>> getAllActiveEntriesForList(List<Integer> ids){
-        return listRepository.getAllActiveEntriesForList(ids);
+    public HashMap<Integer, List<ListEntry>> getAllActiveEntriesForList(List<Integer> listIds, User requestor){
+        HashMap<Integer, List<ListEntry>> entries = listRepository.getAllActiveEntriesForList(listIds);
+        HashMap<Integer, List<ListEntry>> authorizedEntries = new HashMap<>();
+        for (Integer listId : entries.keySet()){
+            if (authenticationService.canUserReadList(listId, requestor)){
+                authorizedEntries.put(listId, entries.get(listId));
+            }
+        }
+        return authorizedEntries;
     }
 
-    public List<ListEntity> getAllActiveListsForGroupIds(List<Integer> ids, User requestor){
-        List<ListEntity> lists = listRepository.getAllActiveListsForGroup(ids);
+    public List<ListEntity> getAllActiveListsForGroupIds(List<Integer> groupIds, User requestor){
+        List<ListEntity> lists = listRepository.getAllActiveListsForGroup(groupIds);
         List<ListEntity> authorizedLists = lists.stream()
                 .filter(l -> authenticationService.canUserReadList(l.getId(), requestor))
                 .toList();

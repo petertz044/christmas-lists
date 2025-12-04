@@ -34,16 +34,15 @@ public class GroupService {
     }
 
     public List<Group> getGroups(User user) {
-        if (user.getRole().equals(ApplicationConstants.ADMIN)) {
+        if (authenticationService.isUserAdmin(user)) {
             return groupRepository.getAllGroups();
         } else {
             return groupRepository.getAllActiveGroupsForUser(user.getId());
         }
-
     }
 
-    public Group getGroupById(Integer id) {
-        return groupRepository.getGroupById(id);
+    public Group getGroupById(Integer groupId) {
+        return groupRepository.getGroupById(groupId);
     }
 
     public int createGroup(Group request) {
@@ -58,18 +57,18 @@ public class GroupService {
         return groupRepository.updateGroup(request);
     }
 
-    public int deactivateGroup(Integer id, User user) {
-        if (!authenticationService.canUserDeleteGroup(getGroupById(id), user)){
-            LOG.warn("User {} is not authorized to deactivate group {}", user, id);
+    public int deactivateGroup(Integer groupId, User requestor) {
+        if (!authenticationService.canUserDeleteGroup(getGroupById(groupId), requestor)){
+            LOG.warn("User {} is not authorized to deactivate group {}", requestor, groupId);
             return -1;
         }
-        return groupRepository.deactivateGroup(id, user);
+        return groupRepository.deactivateGroup(groupId, requestor);
     }
 
-    public int createGroupMappingList(GroupMappingList request, User user) {
+    public int createGroupMappingList(GroupMappingList request, User requestor) {
          ListEntity list = listRepository.getListById(request.getListId());
-        if (!authenticationService.canUserDeleteList(list, user)){
-            LOG.warn("User {} is not authorized to modify group {}", user, request.getGroupId());
+        if (!authenticationService.canUserDeleteList(list, requestor)){
+            LOG.warn("User {} is not authorized to modify group {}", requestor, request.getGroupId());
             return -1;
         }
         if (Optional.ofNullable(groupRepository.getAllActiveGroupsForList(request.getListId())).orElse(List.of())
@@ -86,13 +85,13 @@ public class GroupService {
         return groupRepository.updateGroupMappingList(request);
     }
 */
-    public boolean deactivateGroupMappingList(Integer listId, Integer groupId, User user) {
+    public boolean deactivateGroupMappingList(Integer listId, Integer groupId, User requestor) {
         ListEntity list = listRepository.getListById(listId);
-        if (!authenticationService.canUserDeleteList(list, user)){
-            LOG.warn("User {} is not authorized to modify list {}", user, groupId);
+        if (!authenticationService.canUserDeleteList(list, requestor)){
+            LOG.warn("User {} is not authorized to modify list {}", requestor, groupId);
             return false;
         }
-        return groupRepository.deactivateGroupMappingList(listId, groupId, user);
+        return groupRepository.deactivateGroupMappingList(listId, groupId, requestor);
     }
 
     public List<Group> getAllGroupsForList(Integer listId, User requestor) {
@@ -108,10 +107,10 @@ public class GroupService {
         return authorizedGroups;
     }
 
-    public int createGroupMappingUser(GroupMappingUser request, User user) {
+    public int createGroupMappingUser(GroupMappingUser request, User requestor) {
         Group group = groupRepository.getGroupById(request.getGroupId());
-        if (!authenticationService.canUserDeleteGroup(group, user)) {
-            LOG.warn("User {} is not authorized to modify group with users {}", user, request.getGroupId());
+        if (!authenticationService.canUserDeleteGroup(group, requestor)) {
+            LOG.warn("User {} is not authorized to modify group with users {}", requestor, request.getGroupId());
             return -1;
         }
         if (Optional.ofNullable(groupRepository.getAllActiveGroupsForUser(request.getUserId())).orElse(List.of())
@@ -128,13 +127,13 @@ public class GroupService {
         return groupRepository.updateGroupMappingUser(request);
     }
 */
-    public boolean deactivateGroupMappingUser(Integer userId, Integer groupId, User user) {
+    public boolean deactivateGroupMappingUser(Integer userId, Integer groupId, User requestor) {
         Group group = groupRepository.getGroupById(groupId);
-        if (!authenticationService.canUserDeleteGroup(group, user)){
-            LOG.warn("User {} is not authorized to modify group {}", user, groupId);
+        if (!authenticationService.canUserDeleteGroup(group, requestor)){
+            LOG.warn("User {} is not authorized to modify group {}", requestor, groupId);
             return false;
         }
-        return groupRepository.deactivateGroupMappingUser(userId, groupId, user);
+        return groupRepository.deactivateGroupMappingUser(userId, groupId, requestor);
     }
 
     public List<Group> getAllGroupsForUser(Integer id) {
