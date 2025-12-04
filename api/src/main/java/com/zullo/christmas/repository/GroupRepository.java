@@ -87,7 +87,7 @@ public class GroupRepository {
         return -1;
     }
 
-    public boolean updateGroup(Group group){
+    public int updateGroup(Group group){
         LOG.info("Updating Group Object {}", group);
         String query = GroupSql.UPDATE_GROUP;
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -97,17 +97,17 @@ public class GroupRepository {
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, group.getUserIdLastModified());
         params.addValue(CommonSql.ID, group.getId());
         LOG.debug("{} {}", query, params);
-        return namedParameterJdbcTemplate.update(query, params) > 0;
+        return namedParameterJdbcTemplate.update(query, params);
     }
 
-    public boolean deactivateGroup(Integer id, User user){
+    public int deactivateGroup(Integer id, User user){
         LOG.info("Updating Group Object to INACTIVE {}", id);
         String query = GroupSql.UPDATE_GROUP_INACTIVE;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.IS_ACTIVE, false);
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, user.getId());
         params.addValue(CommonSql.ID, id);
-        return namedParameterJdbcTemplate.update(query, params) > 0;
+        return namedParameterJdbcTemplate.update(query, params);
     }
 
     public int createGroupMappingList(GroupMappingList gml){
@@ -148,11 +148,11 @@ public class GroupRepository {
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
-    public List<Group> getAllActiveGroupsForUser(Integer id) {
-        LOG.info("Getting all active groups for user {}", id);
+    public List<Group> getAllActiveGroupsForUser(Integer userId) {
+        LOG.info("Getting all active groups for user {}", userId);
         String query = GroupSql.SELECT_ACTIVE_GROUPS_FOR_USER_ID;
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue(CommonSql.USER_ID, id);
+        params.addValue(CommonSql.USER_ID, userId);
         List<Group> groups = new ArrayList<>();
         namedParameterJdbcTemplate.query(query, params, rs -> {
             Group group = new Group();
@@ -170,11 +170,11 @@ public class GroupRepository {
     }
 
 
-    public List<Group> getAllActiveGroupsForList(Integer id){
-        LOG.info("Entering getAllActiveGroupsForList id={}", id);
+    public List<Group> getAllActiveGroupsForList(Integer listId){
+        LOG.info("Entering getAllActiveGroupsForList id={}", listId);
         String query = GroupSql.SELECT_ACTIVE_GROUPS_FOR_LIST_ID;
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue(CommonSql.LIST_ID, id);
+        params.addValue(CommonSql.LIST_ID, listId);
         List<Group> groups = new ArrayList<>();
         namedParameterJdbcTemplate.query(query, params, rs -> {
             Group group = new Group();
@@ -230,4 +230,18 @@ public class GroupRepository {
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
+    public List<User> getAllUsersInGroup(Integer groupId){
+        LOG.info("Entering getAllUsersInGroup id={}", groupId);
+        String query = GroupSql.SELECT_USERS_FROM_GROUP;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue(CommonSql.GROUP_ID, groupId);
+        List<User> users = new ArrayList<>();
+        namedParameterJdbcTemplate.query(query, params, rs -> {
+            User user = new User();
+            user.setId(rs.getInt(CommonSql.ID));
+            user.setUsername(rs.getString(CommonSql.USERNAME));
+            users.add(user);
+        });
+        return users;
+    }
 }

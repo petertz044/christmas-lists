@@ -166,11 +166,23 @@ public class GroupSql {
 
     public static final String SELECT_ACTIVE_GROUPS_FOR_LIST_ID = String.format("""
             SELECT
-                group_id
+                gml.group_id,
+                g.title,
+                g.description,
+                g.user_id_owner,
+                g.is_active,
+                g.dt_crtd,
+                g.dt_last_modified,
+                g.user_id_last_modified
             FROM
-                group_mapping_list
+                group_mapping_list gml
+            LEFT JOIN 
+                "group" g
+            ON 
+                gml.group_id=g.id
             WHERE
-                list_id = :%s
+                gml.list_id = :%s AND
+                gml.is_active = true
             """, CommonSql.LIST_ID);
     public static final String SELECT_ALL_GROUPS = """
             SELECT
@@ -203,4 +215,18 @@ public class GroupSql {
                 id=:%s
                 is_active=true
             """, CommonSql.ID);
+    public static final String SELECT_USERS_FROM_GROUP = String.format("""
+            SELECT
+                u.id,
+                u.username
+            FROM 
+                group_mapping_user gmu
+            LEFT JOIN 
+                "user" u
+            ON 
+                gmu.user_id=u.id
+            WHERE 
+                gmu.group_id=:%s AND
+                gmu.is_active=true
+            """, CommonSql.GROUP_ID);
 }

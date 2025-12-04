@@ -23,11 +23,13 @@ public class ListService {
 
     GroupRepository groupRepository;
     ListRepository listRepository;
+    AuthenticationService authenticationService;
 
     @Autowired
-    public ListService(GroupRepository groupRepository, ListRepository listRepository) {
+    public ListService(GroupRepository groupRepository, ListRepository listRepository, AuthenticationService authenticationService) {
         this.groupRepository = groupRepository;
         this.listRepository = listRepository;
+        this.authenticationService = authenticationService;
     }
 
     public int createList(CreateListRequest request) {
@@ -64,7 +66,7 @@ public class ListService {
     }
 
     public ListEntity getListById(Integer listId){
-        return listRepository.getListFromId(listId);
+        return listRepository.getListById(listId);
     }
 
     public int createListEntry(ListEntry entry){
@@ -83,8 +85,12 @@ public class ListService {
         return listRepository.getAllActiveEntriesForList(ids);
     }
 
-    public List<ListEntity> getAllActiveListsForGroupIds(List<Integer> ids){
-        return listRepository.getAllActiveListsForGroup(ids);
+    public List<ListEntity> getAllActiveListsForGroupIds(List<Integer> ids, User requestor){
+        List<ListEntity> lists = listRepository.getAllActiveListsForGroup(ids);
+        List<ListEntity> authorizedLists = lists.stream()
+                .filter(l -> authenticationService.canUserReadList(l.getId(), requestor))
+                .toList();
+        return authorizedLists;
     }
 
 }

@@ -70,13 +70,13 @@ public class UserRepository {
         return namedParameterJdbcTemplate.update(query, params) == 1;
     }
 
-    public boolean updateUserRole(Integer target, Integer adminId, String role) {
+    public int updateUserRole(Integer target, Integer adminId, String role) {
         LOG.info("Updating User Role for user: {} to role {}", target, role);
         String query = UserSql.UPDATE_USER_ROLE;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.ROLE, role);
         params.addValue(CommonSql.ID, target);
         params.addValue(CommonSql.USER_ID_LAST_MODIFIED, adminId);
-        return namedParameterJdbcTemplate.update(query, params) == 1;
+        return namedParameterJdbcTemplate.update(query, params);
     }
 }

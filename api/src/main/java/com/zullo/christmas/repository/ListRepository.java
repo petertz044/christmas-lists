@@ -70,8 +70,8 @@ public class ListRepository {
         return namedParameterJdbcTemplate.update(query, params) > 0;
     }
 
-    public ListEntity getListFromId(Integer listId) {
-        LOG.info("Entering getListFromId id={}", listId);
+    public ListEntity getListById(Integer listId) {
+        LOG.info("Entering getListById id={}", listId);
         String query = ListSql.SELECT_LIST_BY_ID;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue(CommonSql.LIST_ID, listId);

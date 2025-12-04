@@ -52,30 +52,33 @@ public class AuthenticationController {
 
     @PostMapping("/v1/register")
     public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest request) {
-
+        //TODO: Add errors for existing username/email
         RegisterResponse response = authService.saveUser(request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/v1/role/{userId}")
-    public ResponseEntity<String> changeUserRole(@RequestBody RoleChangeRequest request, 
-                                                 @PathVariable Integer userId, 
-                                                 @RequestHeader(name = "Authorization") String jwt){
+    public ResponseEntity<String> changeUserRole(@RequestBody RoleChangeRequest request,
+            @PathVariable Integer userId,
+            @RequestHeader(name = "Authorization") String jwt) {
         User requestor = jwtService.extractUserFromJwt(jwt);
-        if (!requestor.getRole().equals("A")){
-            return new ResponseEntity<>("User is not an Admin and cannot change the role of a user", HttpStatus.UNAUTHORIZED);
-        }
-        if (!List.of(ApplicationConstants.ADMIN, ApplicationConstants.USER).contains(request.role())){
-            return new ResponseEntity<>("Requested role is invalid", HttpStatus.BAD_REQUEST);
-        }
-        
-        authService.updateUserRole(userId, requestor.getId(), request.role());
 
+        int result = authService.updateUserRole(userId, requestor, request.role());
+        if (result == -1) {
+            return new ResponseEntity<>("User is not an Admin and cannot change the role of a user",
+                    HttpStatus.UNAUTHORIZED);
+        } else if (result == -2) {
+            return new ResponseEntity<>("Requested role is invalid", HttpStatus.BAD_REQUEST);
+        } else if (result == 0) {
+            return new ResponseEntity<>("Failed to update user role", HttpStatus.INTERNAL_SERVER_ERROR);
+        } else if (result >= 1) {
+            LOG.error("------CRITICAL ERROR------ Multiple rows affected when updating user role for userId {}: {}", userId, result);
+            return new ResponseEntity<>("Failed to update user role", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(null, HttpStatus.OK);
 
     }
-
 
     @GetMapping("/v1/protected")
     public String testAuthProtection() {
