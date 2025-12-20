@@ -119,7 +119,7 @@ public class ListSql {
             FROM
                 list_entry
             WHERE
-                id IN (:%s) AND
+                id = :%s AND
                 is_active = true
             """, CommonSql.ID);
 

@@ -100,12 +100,12 @@ public class ListService {
         return false;
     }
 
-    public boolean deactivateListEntry(Integer id, User user){
-        if (!authenticationService.canUserDeleteListEntry(listRepository.getListEntryById(id), user)){
-            LOG.warn("User {} is not authorized to delete list entry {}", user, id);
+    public boolean deactivateListEntry(Integer entryId, User user){
+        if (!authenticationService.canUserDeleteListEntry(listRepository.getListEntryById(entryId), user)){
+            LOG.warn("User {} is not authorized to delete list entry {}", user, entryId);
             return false;
         }
-        return listRepository.deactivateListEntry(id, user);
+        return listRepository.deactivateListEntry(entryId, user);
     }
 
     public HashMap<Integer, List<ListEntry>> getAllActiveEntriesForList(List<Integer> listIds, User requestor){
