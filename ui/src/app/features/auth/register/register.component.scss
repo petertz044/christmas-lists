@@ -4,22 +4,22 @@ $secondary-green: #2e7d32;
 $gold: #fbc02d;
 $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
+input::-ms-reveal,
+input::-ms-clear {
+    display: none !important;
+}
+
 .register-wrapper {
 flex: 1;
 padding: 2.5rem 3rem;
 display: flex;
 justify-content: center;
 
-    .register-form-wrapper {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-    }
-
     .register-card {
     background-color: #fff;
     display: flex;
     flex-direction: column;
+    max-width: 600px;
     width: 50%;
     align-items: center;
     text-align: center;
@@ -89,4 +89,3 @@ justify-content: center;
     }
     }
 }
-

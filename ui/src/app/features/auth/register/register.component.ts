@@ -9,8 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/auth.service';
+import { Router } from '@angular/router';
 import PasswordValidator from '../../../core/validators/password-validator.validators';
 
 @Component({
@@ -18,7 +17,6 @@ import PasswordValidator from '../../../core/validators/password-validator.valid
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterLink,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -35,8 +33,7 @@ export class RegisterComponent implements OnInit{
   hidePassword = true;
   hideConfirmPassword = true;
   passMatch = false;
-  private register = inject(RegisterService)
-  private auth = inject(AuthService);
+  private register = inject(RegisterService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   registerForm!: FormGroup;
@@ -47,7 +44,7 @@ export class RegisterComponent implements OnInit{
     this.registerForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', Validators.required],
       password: [
         '',
         [
@@ -74,8 +71,8 @@ export class RegisterComponent implements OnInit{
     return this.registerForm.get('lastName')!;
   }
 
-  get email() {
-    return this.registerForm.get('email')!;
+  get username() {
+    return this.registerForm.get('username')!;
   }
 
   get password() {
@@ -86,9 +83,7 @@ export class RegisterComponent implements OnInit{
     return this.registerForm.get('confirmPassword')
   }
 
-
   isLoading = signal(false);
-  loginFailed = signal(false);
 
   onSubmit() {
     if (this.registerForm.invalid) return;
@@ -97,34 +92,23 @@ export class RegisterComponent implements OnInit{
 
     this.isLoading.set(true)
 
-    const user = this.registerForm.value;
+    const { username, password } = this.registerForm.value;
 
-    /*
+    const body = { username, password };
 
-    this.register.registerUser( user as {
-      firstName: string,
-      lastName: string,
-      email: string,
-      password: string
-    }).subscribe({
-      next: (success) => {
+    this.register.registerUser( body ).subscribe({
+      next: () => {
         this.registerForm.enable()
         this.isLoading.set(false);
-        if (success) {
-          this.snackBar.open('Login successful', 'Close', { duration: 3000 });
-          this.router.navigate(['/home']);
-        } else {
-          this.snackBar.open('Invalid credentials', 'Close', { duration: 3000 });
-        }
+        this.snackBar.open('Registration successful!', 'Close', { duration: 3000 });
+        this.router.navigate(['/home'])
       },
       error: (err) => {
         this.registerForm.enable()
         this.isLoading.set(false);
-        console.error('Login error:', err);
-        this.snackBar.open('Login failed. Please try again.', 'Close', { duration: 3000 });
+        console.error('Register error:', err);
+        this.snackBar.open('Register failed. Please try again.', 'Close', { duration: 3000 });
       }
     });
-
-    */
   }
 }

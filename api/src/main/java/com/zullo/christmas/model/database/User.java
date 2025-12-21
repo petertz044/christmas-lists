@@ -1,4 +1,4 @@
-package com.zullo.christmas.model.Database;
+package com.zullo.christmas.model.database;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 
-//$page-bg: linear-gradient(to bottom, #f0f8ff, #fff);
+$page-bg: linear-gradient(to bottom, #f0f8ff, #fff);
 $primary-red: #c62828;
 $secondary-green: #2e7d32;
 $gold: #fbc02d;
@@ -19,6 +19,7 @@ html {
 
 body {
   font-family: $font-family;
+  background-color: $page-bg;
   color: $primary-red;
 }
 
@@ -34,35 +35,85 @@ head {
   --mdc-outlined-text-field-outline-color: $secondary-green;
 }
 
-.site-wide-header {
+.site-logo {
+    vertical-align: top;
+    font-size: x-large;
+    padding-left: 15px;
+}
+
+.nav-options a {
+  font-family: $font-family;
+  color: $secondary-green;
+  justify-content: space-between;
+}
+
+.active-link {
+  font-weight: 600;                  // bold text
+  text-decoration: underline;        // underline only under the text
+  text-decoration-color: $primary-red;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;        // pushes underline a bit lower for a clean look
+  color: $primary-red !important;    // matches theme
+}
+
+.mat-mdc-button {
+  position: relative;
+
+  &.active-link::after {
+    content: '';
+    position: absolute;
+    color: $primary-red !important; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background-color: $primary-red;
+    border-radius: 2px;
+  }
+}
+
+.site-wide-header.mat-toolbar {
   position: absolute; // or absolute, depending on your layout
+  background-color: #fff;
   top: 0;
   left: 0;
   right: 0;
   width: 100vw;
   font-family: $font-family;
   border-bottom: 1px solid $primary-red;
-  text-align: left;
   max-block-size: 4rem;
   color: $secondary-green;
-  font-size: 1rem;
-  background: white;
-  z-index: 1000;
+  display: flex;
 
-  h1 {
-    vertical-align: middle;
-    align-items: center;
-    padding-left: 15px;
-    margin: 0;
+  .mat-mdc-button {
+    font-size: 1.1rem;       // bigger text
+    padding: 0.75rem 1.5rem; // more click area
+    min-height: 48px;        // taller button
+    background: transparent !important;
 
-    .header-icon {
-      font-size: 32px;
-      height: 32px;
-      width: 32px;
-      vertical-align: top;
-      overflow: visible;
-      background-color: transparent;
+    &:hover,
+    &:focus {
+      font-weight: 600;
+      color: $primary-red !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    &.active-link {      
+      font-weight: 600; // bold
+      text-decoration-color: $primary-red;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+      color: $primary-red !important;
     }
   }
-}
 
+  .header-icon {
+    font-size: 32px;
+    height: 32px;
+    width: 32px;
+    vertical-align: top;
+    overflow: visible;
+    background-color: transparent;
+  }
+}

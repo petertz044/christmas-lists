@@ -1,22 +1,36 @@
-<nav class="header">
-    <a 
-    routerLink="/home"
-    padding="1rem"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{exact: true}"
-    >Home</a>
-    <a 
-    routerLink="/lists/user-list"
-    padding="1rem"
-    >My List</a>
-    <!--View the members of your group and their lists-->
-    <a 
-    routerLink="/lists/group-lists"
-    padding="1rem"
-    >My Group</a>
-    <!--Set a budget, track your purchases, organize your shopping-->
-    <a 
-    routerLink="/group/members"
-    padding="1rem"
-    >My Purchases</a> 
-</nav>
+<mat-toolbar class="site-wide-header">
+    <mat-toolbar-row>
+        <span class="site-logo">
+            Christmas Lists
+            <mat-icon>checklist_rtl</mat-icon>
+        </span>
+
+        <span>
+            <a
+            mat-button
+            routerLink="/home"
+            routerLinkActive="active-link"
+            >Home</a>
+
+            <a
+            mat-button
+            routerLink="/lists/user-list"
+            routerLinkActive="active-link"
+            >My List</a>
+
+            <!--View the members of your group and their lists-->
+            <a
+            mat-button
+            routerLink="/groups"
+            routerLinkActive="active-link"
+            >My Groups</a>
+
+            <!--Set a budget, track your purchases, organize your shopping-->
+            <a
+            mat-button
+            routerLink="/shopping"
+            routerLinkActive="active-link"
+            >My Shopping</a>
+        </span>
+    </mat-toolbar-row>
+</mat-toolbar>

@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
 
 @RestControllerAdvice
 public class ExceptionTranslator {
@@ -20,26 +18,27 @@ public class ExceptionTranslator {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse processException(Exception e){
         LOG.error("Generic unhandled error occurred in the application!", e);
-        return ErrorResponse.create(e, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error, contact developer!");
+        return ErrorResponse.create(e, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error, contact developer! " + e.getMessage());
     }
 
     @ExceptionHandler(ChristmasException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse processApplicationException(ChristmasException e){
         LOG.error("Error occurred in the application!", e);
-        return ErrorResponse.create(e, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error, contact developer!");
+        return ErrorResponse.create(e, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error, contact developer! " + e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse processRuntimeException(RuntimeException e){
         LOG.error("Error occurred in the application!", e);
-        return ErrorResponse.create(e, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error, contact developer!");
+        return ErrorResponse.create(e, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error, contact developer! " + e.getMessage());
     }
 
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse processExpiredJwt(JwtException e){
+        LOG.debug("Invalid JWT Occurred");
         return ErrorResponse.create(e, HttpStatus.UNAUTHORIZED, "JWT Invalid!");
     }
     
