@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,8 +46,8 @@ public class ListController {
     }
 
     @GetMapping("/v1/lists")
-    public ResponseEntity<List<ListEntity>> getLists(@RequestHeader(name = "Authorization") String jwt) {
-        User user = jwtService.extractUserFromJwt(jwt);
+    public ResponseEntity<List<ListEntity>> getLists() {
+        User user = jwtService.getCurrentUser();
 
         List<ListEntity> lists = listService.getAllListsForUser(user);
 
@@ -57,9 +56,9 @@ public class ListController {
     }
 
     @PostMapping("/v1/list")
-    public ResponseEntity<Integer> createList(@RequestHeader(name = "Authorization") String jwt, @RequestBody CreateListRequest request) {
+    public ResponseEntity<Integer> createList(@RequestBody CreateListRequest request) {
         LOG.debug("Initiating createList request={}", request);
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
 
         request.getList().setUserIdOwner(user.getId());
         request.getList().setUserIdLastModified(user.getId());
@@ -71,9 +70,9 @@ public class ListController {
     }
 
     @PostMapping("/v1/list/{listId}")
-    public ResponseEntity<String> updateList(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntity request, @PathVariable Integer listId) {
+    public ResponseEntity<String> updateList(@RequestBody ListEntity request, @PathVariable Integer listId) {
         LOG.debug("Initiating updateList id={} request={}", listId, request);
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
         request.setUserIdLastModified(user.getId());
         request.setId(listId);
 
@@ -92,9 +91,9 @@ public class ListController {
     }
 
     @DeleteMapping("/v1/list/{listId}")
-    public ResponseEntity<String> deleteList(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer listId) {
-        LOG.debug("Initiating createList id={} request={}", listId);
-        User user = jwtService.extractUserFromJwt(jwt);
+    public ResponseEntity<String> deleteList(@PathVariable Integer listId) {
+        LOG.debug("Initiating createList id={}", listId);
+        User user = jwtService.getCurrentUser();
 
         listService.deleteList(listId, user);
 
@@ -102,8 +101,8 @@ public class ListController {
     }
 
     @GetMapping("/v1/list/{listId}/entries")
-    public ResponseEntity<HashMap<Integer, List<ListEntry>>> getListEntries(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer listId) {
-        User user = jwtService.extractUserFromJwt(jwt);
+    public ResponseEntity<HashMap<Integer, List<ListEntry>>> getListEntries(@PathVariable Integer listId) {
+        User user = jwtService.getCurrentUser();
 
         HashMap<Integer, List<ListEntry>> entries = listService.getAllActiveEntriesForList(List.of(listId), user);
 
@@ -112,9 +111,9 @@ public class ListController {
     }
 
     @PostMapping("/v1/list/{listId}/entry")
-    public ResponseEntity<Integer> createListEntry(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntry request, @PathVariable Integer listId) {
+    public ResponseEntity<Integer> createListEntry(@RequestBody ListEntry request, @PathVariable Integer listId) {
         LOG.debug("Initiating createList request={}", request);
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
         request.setUserIdOwner(user.getId());
         request.setListId(listId);
         request.setUserIdLastModified(user.getId());
@@ -127,9 +126,9 @@ public class ListController {
     }
 
     @PostMapping("/v1/list/{listId}/entry/{entryId}")
-    public ResponseEntity<String> updateListEntry(@RequestHeader(name = "Authorization") String jwt, @RequestBody ListEntry request, @PathVariable Integer entryId,  @PathVariable Integer listId) {
-        LOG.debug("Initiating updateList id={} request={}", entryId, request);
-        User user = jwtService.extractUserFromJwt(jwt);
+    public ResponseEntity<String> updateListEntry(@RequestBody ListEntry request, @PathVariable Integer entryId,  @PathVariable Integer listId) {
+        LOG.debug("Initiating updateList id={}", entryId, request);
+        User user = jwtService.getCurrentUser();
         request.setId(entryId);
         request.setListId(listId);
         request.setUserIdLastModified(user.getId());
@@ -140,9 +139,9 @@ public class ListController {
     }
 
     @DeleteMapping("/v1/list/{listId}/entry/{entryId}")
-    public ResponseEntity<String> deleteListEntry(@RequestHeader(name = "Authorization") String jwt, @PathVariable Integer entryId) {
+    public ResponseEntity<String> deleteListEntry(@PathVariable Integer entryId) {
         LOG.debug("Initiating createList id={}", entryId);
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
 
         listService.deactivateListEntry(entryId, user);
 

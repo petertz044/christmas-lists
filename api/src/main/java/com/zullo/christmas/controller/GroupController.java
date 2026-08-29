@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,8 +47,8 @@ public class GroupController {
     }
 
     @GetMapping("/v1/groups")
-    public ResponseEntity<List<Group>> getAllGroups(@RequestHeader(name = "Authorization") String jwt) {
-        User user = jwtService.extractUserFromJwt(jwt);
+    public ResponseEntity<List<Group>> getAllGroups() {
+        User user = jwtService.getCurrentUser();
 
         List<Group> groups = groupService.getGroups(user);
 
@@ -57,9 +56,9 @@ public class GroupController {
     }
 
     @GetMapping("/v1/group/{groupId}/users")
-    public ResponseEntity<List<User>> getAllUsersInGroup(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<List<User>> getAllUsersInGroup(
             @PathVariable Integer groupId) {
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
     
         List<User> users = groupService.getAllUsersForGroup(groupId, user);
 
@@ -67,9 +66,9 @@ public class GroupController {
     }
 
     @PostMapping("/v1/group")
-    public ResponseEntity<Integer> createGroup(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<Integer> createGroup(
             @RequestBody Group request) {
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
         request.setUserIdOwner(user.getId());
         Integer id = groupService.createGroup(request);
 
@@ -77,10 +76,10 @@ public class GroupController {
     }
 
     @PostMapping("/v1/group/{groupId}")
-    public ResponseEntity<String> updateGroup(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<String> updateGroup(
             @RequestBody Group request,
             @PathVariable Integer groupId) {
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
         request.setId(groupId);
         request.setUserIdLastModified(user.getId());
 
@@ -96,9 +95,9 @@ public class GroupController {
     }
 
     @DeleteMapping("/v1/group/{groupId}")
-    public ResponseEntity<String> deleteGroup(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<String> deleteGroup(
             @PathVariable Integer groupId) {
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
 
         int result = groupService.deactivateGroup(groupId, user);
 
@@ -113,9 +112,9 @@ public class GroupController {
     }
 
     @GetMapping("/v1/list/{listId}/groups")
-    public ResponseEntity<List<Group>> getGroupMappingLists(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<List<Group>> getGroupMappingLists(
             @PathVariable Integer listId) {
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
 
         List<Group> groups = groupService.getAllGroupsForList(listId, user);
 
@@ -124,9 +123,9 @@ public class GroupController {
     }
 
     @GetMapping("/v1/group/{groupId}/lists")
-    public ResponseEntity<List<ListEntity>> getListsForGroup(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<List<ListEntity>> getListsForGroup(
             @PathVariable Integer groupId) {
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
 
         List<ListEntity> lists = listService.getAllActiveListsForGroupIds(List.of(groupId), user);
 
@@ -134,11 +133,11 @@ public class GroupController {
     }
 
     @PostMapping("/v1/list/{listId}/group")
-    public ResponseEntity<Integer> createGroupMappingList(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<Integer> createGroupMappingList(
             @RequestBody GroupMappingList request,
             @PathVariable Integer listId) {
         LOG.debug("Initiating createList request={}", request);
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
         request.setListId(listId);
         request.setUserIdLastModified(user.getId());
 
@@ -170,18 +169,18 @@ public class GroupController {
      */
     
     @DeleteMapping("/v1/list/{listId}/group/{groupId}")
-    public ResponseEntity<String> deleteGroupMappingList(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<String> deleteGroupMappingList(
             @PathVariable Integer listId,
             @PathVariable Integer groupId) {
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
         groupService.deactivateGroupMappingList(listId, groupId, user);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/v1/user/{userId}/groups")
-    public ResponseEntity<List<Group>> getGroupMappingUsers(@RequestHeader(name = "Authorization") String jwt) {
-        User user = jwtService.extractUserFromJwt(jwt);
+    public ResponseEntity<List<Group>> getGroupMappingUsers() {
+        User user = jwtService.getCurrentUser();
 
         List<Group> groups = groupService.getAllGroupsForUser(user.getId());
 
@@ -190,10 +189,10 @@ public class GroupController {
     }
 
     @PostMapping("/v1/user/{userId}/group")
-    public ResponseEntity<Integer> createGroupMappingUser(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<Integer> createGroupMappingUser(
             @RequestBody GroupMappingUser request) {
         LOG.debug("Initiating createGroupMappingUser request={}", request);
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
         request.setUserIdLastModified(user.getId());
 
         Integer id = groupService.createGroupMappingUser(request, user);
@@ -226,11 +225,11 @@ public class GroupController {
      */
 
     @DeleteMapping("/v1/user/{userId}/group/{groupId}")
-    public ResponseEntity<String> deleteGroupMappingUser(@RequestHeader(name = "Authorization") String jwt,
+    public ResponseEntity<String> deleteGroupMappingUser(
             @PathVariable Integer userId,
             @PathVariable Integer groupId) {
         LOG.debug("Initiating deleteGroupMappingUser id={}", groupId);
-        User user = jwtService.extractUserFromJwt(jwt);
+        User user = jwtService.getCurrentUser();
 
         groupService.deactivateGroupMappingUser(userId, groupId, user);
 
