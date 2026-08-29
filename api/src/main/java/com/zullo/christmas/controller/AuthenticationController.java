@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,9 +59,8 @@ public class AuthenticationController {
 
     @PostMapping("/v1/role/{userId}")
     public ResponseEntity<String> changeUserRole(@RequestBody RoleChangeRequest request,
-            @PathVariable Integer userId,
-            @RequestHeader(name = "Authorization") String jwt) {
-        User requestor = jwtService.extractUserFromJwt(jwt);
+            @PathVariable Integer userId) {
+        User requestor = jwtService.getCurrentUser();
 
         int result = authService.updateUserRole(userId, requestor, request.role());
         if (result == -1) {

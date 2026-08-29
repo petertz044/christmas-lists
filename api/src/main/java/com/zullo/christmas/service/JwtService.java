@@ -8,6 +8,8 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.zullo.christmas.model.database.User;
@@ -60,6 +62,20 @@ public class JwtService {
         user.setRole(parsedJwt.get("roles", String.class));
 
         return user;
+    }
+
+    /**
+     * Returns the {@link User} that was already parsed from the JWT by the
+     * authentication filter and stored as the current principal. Controllers
+     * should use this instead of re-parsing the raw Authorization header so
+     * the token is only validated in a single place.
+     */
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof User)) {
+            throw new IllegalStateException("No authenticated user present in the security context");
+        }
+        return (User) authentication.getPrincipal();
     }
 
 }
